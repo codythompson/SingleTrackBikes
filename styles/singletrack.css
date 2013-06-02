@@ -1,0 +1,5 @@
+@media (max-width: 750px) {
+    .hidden-750 {
+        display:none !important;
+    }
+}
