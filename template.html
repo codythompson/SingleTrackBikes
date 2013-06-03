@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:og="http://opengraphprotocol.org/schema/"
+    xmlns:fb="http://www.facebook.com/2008/fbml">
+    <!-- <html lang="en"> -->
     <head>
         <title>Single Track Bikes - Flagstaff Arizona</title>
 
@@ -8,10 +10,20 @@
         <link rel="stylesheet" href="styles/singletrack.css" type="text/css" />
     <head>
     <body>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
         <div class="container">
             <div class="row">
 
-                <div class="span2">
+                <div id="st-left-column" class="span2">
                     <a href="">
                         <h1>
                             <img src="images/single_track_logo_small.jpg"
@@ -19,9 +31,10 @@
                         </h1>
                     </a>
 
-                    <div class="hidden-750" style="border: 1px solid;">
-                        <h3>Twitter Feed goes here</h3>
-                        <b>NOTE: ALL OF These colors will change from blue</b><br/><br/>
+                    <div class="hidden-750 st-borders st-grey">
+                        <h3 class="st-red">Twitter Feed goes here</h3>
+                        <hr>
+                        Something Something and Something Else Or whatever
                     </div>
                 </div>
 
@@ -96,7 +109,7 @@
                             </a>
                             </li>
                             <li>
-                            <a href="">
+                            <a class="fb-like" data-send="false" data-width="450" data-show-faces="false">
                                 Like Us on Facebook
                             </a>
                             </li>
@@ -122,9 +135,18 @@
                         </li>
                     </ul>
 
-                    <div>
-                        <img src="images/Front_COUNTER.JPG" alt="TEST" />
+                    <div id="big-carousel" class="carousel slide">
+                        <div class="carousel-inner st-borders st-borders-red">
+                            <div class="active item">
+                                <img src="images/Front_COUNTER.JPG" alt="Single Track Bikes" />
+                            </div>
+                            <div class="item">
+                                <img src="images/orange_1.jpg" alt="Single Track Bikes" />
+                            </div>
+                        </div>
                     </div>
+                    <!-- end carousel -->
+
                 </div>
 
             </div>
@@ -135,5 +157,6 @@
         <!-- These are here so the rest of the page can be loaded first -->
         <script src="scripts/jquery-1.10.0.min.js" type="text/javascript"></script>
         <script src="scripts/bootstrap.js" type="text/javascript"></script>
+        <script src="scripts/singletrack.js" type="text/javascript"></script>
     </body>
 </html>
