@@ -77,9 +77,6 @@ function MakePage($title, $navBar, $content) {
                             </li>
                             <li>
                             <a class="fb-like" data-send="false" data-width="450" data-show-faces="false">
--->
-                                <!-- Like Us on Facebook -->
-<!--
 <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FSingle-Track-Bikes%2F285426214809646&amp;send=false&amp;layout=standard&amp;width=450&amp;show_faces=false&amp;font&amp;colorscheme=light&amp;action=like&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
                             </a>
                             </li>
