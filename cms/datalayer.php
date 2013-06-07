@@ -6,7 +6,7 @@ function GetNavLinks() {
             "href" => "/"),
         array("text" => "Bikes",
             "hover_title" => "Bikes we carry",
-            "href" => "/bikes.php",
+            "href" => "/bikes.php" /*,
             "dropdown_links" => array(
                 array(
                     "text" => "All Companies",
@@ -23,6 +23,7 @@ function GetNavLinks() {
         array("text" => "Gear",
             "hover_title" => "Other stuff we carry",
             "href" => "/")
+        */)
     );
     return $navLinks;
 }
