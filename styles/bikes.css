@@ -1,0 +1,27 @@
+#container-bikes {
+    position: relative;
+}
+
+#container-bikes img {
+    width: 100%;
+}
+
+#container-bikes .st-floating {
+    top: 5%;
+    left: 5%;
+    padding: 2%;
+    max-width: 60%;
+}
+
+#container-bikes .st-floating a {
+    color: #ddd;
+}
+
+#container-bikes .st-floating a:hover {
+    color: #fff;
+}
+
+#container-bikes .media .st-imagelink {
+    width: 15%;
+    min-width: 32px;
+}

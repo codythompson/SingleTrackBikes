@@ -6,11 +6,11 @@ function GetNavLinks() {
             "href" => "/"),
         array("text" => "Bikes",
             "hover_title" => "Bikes we carry",
-            "href" => "/",
+            "href" => "/bikes.php",
             "dropdown_links" => array(
                 array(
-                    "text" => "Test 1",
-                    "href" => "/"),
+                    "text" => "All Companies",
+                    "href" => "/bikes.php"),
                 array(
                     "text" => "Test 2",
                     "hover_title" => "Test Link 2",

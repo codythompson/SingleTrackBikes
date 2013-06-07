@@ -1,3 +1,8 @@
+body {
+    background-image: url('/images/background.jpg');
+    background-repeat: repeat-x;
+}
+
 .st-red {
     color: #D44;
 }
@@ -23,6 +28,22 @@
     border-color: #444;
 }
 */
+
+.st-floating {
+    position: absolute;
+
+    color: #f66;
+    background-color: rgba(68, 68, 68, 0.9);
+}
+
+.st-floating h1,
+.st-floating h2,
+.st-floating h3,
+.st-floating h2,
+.st-floating h5,
+.st-floating h6 {
+    color: #fff;
+}
 
 #st-left-column .st-grey {
     padding: 8px;
