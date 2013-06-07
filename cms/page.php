@@ -92,7 +92,6 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content) {
                 </div>
 
                 <div class="span10">
-                    <ul class="nav nav-pills">
 <?php
     $navBar->writeElement();
 
