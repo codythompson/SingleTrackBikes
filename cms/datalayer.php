@@ -1,4 +1,9 @@
 <?php
+define("ST_PRODUCT_TYPE_ID_BIKES", 1);
+
+$dbconn_loc = "dbconn.php";
+require($dbconn_loc);
+
 function GetNavLinks() {
     $navLinks = array(
         array("text" => "Home",
@@ -26,5 +31,30 @@ function GetNavLinks() {
         */)
     );
     return $navLinks;
+}
+
+function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {
+    global $mysqli;
+
+    $query = "select * from single_track.product p where p.product_type_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if ($stmt) {
+        $stmt->bind_param("i", $intTypeId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $rows = array();
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
+    return null;
+}
+
+function getProductInfo($intParentId, $intChildrenDepth = 1) {
+
 }
 ?>

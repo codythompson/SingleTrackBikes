@@ -1,7 +1,25 @@
+<?php
+require_once("cms/datalayer.php");
+
+$bikes_info = getTopLevelProductInfo(ST_PRODUCT_TYPE_ID_BIKES, 1);
+?>
+
 <div id="container-bikes" class="st-rounded">
     <img src="/images/SDC10465.JPG" alt="Single Track Dealers" class="st-rounded" />
+
     <div class="st-floating st-rounded">
         <h2>Bikes We Sell</h2>
+
+<?php
+foreach ($bikes_info as $co_info) {
+?>
+        <div class="media">
+            <a class="pull-left st-imagelink" href="<?php ?>
+        </div>
+<?php
+}
+?>
+
         <div class="media">
             <a class="pull-left st-imagelink" href="http://trekbikes.com" target="_blank">
                 <img src="images/trek-logo-large-white-text.png" class="media-object" />

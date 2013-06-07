@@ -11,6 +11,15 @@
     left: 5%;
     padding: 2%;
     max-width: 60%;
+    max-height: 86%;
+
+    overflow: auto;
+}
+
+@media (max-width: 979px) {
+    #container-bikes .st-floating {
+        max-width: 86%;
+    }
 }
 
 #container-bikes .st-floating a {
