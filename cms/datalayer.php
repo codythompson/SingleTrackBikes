@@ -39,6 +39,7 @@ function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {
     global $mysqli;
 
     $query = "select * from single_track.product p where p.product_type_id = ?";
+    $query .= " and p.product_parent_id is null";
     $stmt = $mysqli->prepare($query);
     if ($stmt) {
         $stmt->bind_param("i", $intTypeId);
@@ -60,8 +61,50 @@ function getProductInfo($intParentId, $intChildrenDepth = 1) {
 
 }
 
-function getBikeCOsHtmlObject() {
-    $coInfo = getTopLevelProductInfo(ST_PRODUCT_TYPE_ID_BIKES, 1);
-    $rootEle = new HtmlElement("div", null, "media");
+/* Returns an array of HtmlElement objects formatted for use on the
+ * bikes.php content page.
+ */
+function getBikeCOsHtmlObjects() {
+    $coInfoArray = getTopLevelProductInfo(ST_PRODUCT_TYPE_ID_BIKES, 1);
+    $htmlEles = array();
+    foreach($coInfoArray as $coInfo) {
+        $rootEle = new HtmlElement("div", null, "media");
+    
+        $childEle = new HtmlElement("span", null, "pull-left st-imagelink");
+        if (!empty($coInfo["offsite_url"])) {
+            $childEle->tagName = "a";
+            $childEle->setAttribute("href", $coInfo["offsite_url"]);
+            $childEle->setAttribute("target", "_blank");
+        }
+    
+        if (!empty($coInfo["logo_url"])) {
+            $childEle->childElements[] = new HtmlElement("img", null,
+                "media-object");
+            $childEle->childElements[0]->setAttribute("src",
+                $coInfo["logo_url"]);
+        }
+        $rootEle->childElements[] = $childEle;
+
+        $childEle = new HtmlElement("div", null, "media-body");
+        $childEle->childElements[] = new HtmlElement("h3", null,
+            "media-heading", $coInfo["name"]);
+        if (!empty($coInfo["short_descr"])) {
+            $childEle->childElements[] = new HtmlElement("p", null, null, $coInfo["short_descr"]);
+        }
+        if (!empty($coInfo["offsite_url"])) {
+            $childChildEle = new HtmlElement("p");
+            $childChildEle->childElements[] = new HtmlElement("a", null, null,
+                "Visit the " . $coInfo["name"] . " home page");
+            $childChildEle->childElements[0]->setAttribute("href",
+                $coInfo["offsite_url"]);
+            $childChildEle->childElements[0]->setAttribute("target", "_blank");
+            $childEle->childElements[] = $childChildEle;
+        }
+        $rootEle->childElements[] = $childEle;
+
+        $htmlEles[] = $rootEle;
+    }
+
+    return $htmlEles;
 }
 ?>

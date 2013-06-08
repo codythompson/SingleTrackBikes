@@ -14,4 +14,4 @@ values (
 'Surly',
 'http://surlybikes.com',
 'Surly makes awesome bikes. More description here plz. scelerisque ante sollicitudin commodo. Cras purus odio,vestibulum in vulputate at, tempus viverra turpis.',
-'/images/trek-logo-large-white-text.png');
+'/images/surly-logo.gif');
