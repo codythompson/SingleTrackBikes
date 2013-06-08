@@ -4,6 +4,8 @@ define("ST_PRODUCT_TYPE_ID_BIKES", 1);
 $dbconn_loc = "dbconn.php";
 require($dbconn_loc);
 
+require_once("htmlelement.php");
+
 function GetNavLinks() {
     $navLinks = array(
         array("text" => "Home",
@@ -56,5 +58,10 @@ function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {
 
 function getProductInfo($intParentId, $intChildrenDepth = 1) {
 
+}
+
+function getBikeCOsHtmlObject() {
+    $coInfo = getTopLevelProductInfo(ST_PRODUCT_TYPE_ID_BIKES, 1);
+    $rootEle = new HtmlElement("div", null, "media");
 }
 ?>
