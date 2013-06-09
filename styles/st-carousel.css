@@ -49,6 +49,44 @@
     }
 }
 
+.carousel-indicators {
+    padding: 1%;
+
+    background-color: rgba(68, 68, 68, 0.9);
+}
+
+.carousel-indicators li {
+    cursor: pointer;
+}
+
+.carousel-control-left {
+    position: absolute;
+    left: 1%;
+    top: 50%;
+    padding: 1%;
+    border-radius: 2px;
+
+    color: #f66;
+    background-color: rgba(68, 68, 68, 0.5);
+}
+.carousel-control-left:hover {
+    background-color: rgba(68, 68, 68, 0.9);
+}
+
+.carousel-control-right {
+    position: absolute;
+    right: 1%;
+    top: 50%;
+    padding: 1%;
+    border-radius: 2px;
+
+    color: #f66;
+    background-color: rgba(68, 68, 68, 0.5);
+}
+.carousel-control-right:hover {
+    background-color: rgba(68, 68, 68, 0.9);
+}
+
 .st-carousel-caption h1,
 .st-carousel-caption h2,
 .st-carousel-caption h3,
