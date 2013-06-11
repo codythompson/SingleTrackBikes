@@ -6,6 +6,14 @@ require($dbconn_loc);
 
 require_once("htmlelement.php");
 
+function resultToArrayOfAssoc($result) {
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+        $rows[] = $row;
+    }
+    return $rows;
+}
+
 function GetNavLinks() {
     $navLinks = array(
         array("text" => "Home",
@@ -57,8 +65,49 @@ function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {
     return null;
 }
 
-function getProductInfo($intParentId, $intChildrenDepth = 1) {
+function getProductInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
+    global $mysqli;
 
+    if ($intChildrenDepth <= 0) {
+        return null;
+    }
+
+    $stmt->execute();
+    $rows = resultToArrayOfAssoc($stmt->get_result());
+
+    for ($i = 0; $i < count($rows); $i++) {
+        $row = $rows[$i];
+        $intParentId = $row["product_id"];
+        $row["child_product"] = getProductInfo_helper($stmt, $intParentId,
+            $intChildrenDepth - 1);
+        $rows[$i] = $row;
+    }
+
+    return $rows;
+}
+
+function getProductInfo($intParentId, $intChildrenDepth = 1) {
+    global $mysqli;
+
+    if ($intChildrenDepth <= 0) {
+        return null;
+    }
+
+    $query = "select * from single_track.product p ";
+    if (empty($intParentId)) {
+        $query .= "where p.product_parent_id is null";
+    }
+    else { 
+        $query .= "where p.product_parent_id = ?";
+    }
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param("i", $intParentId);
+    if ($stmt) {
+        return getProductInfo_helper($stmt, $intParentId, $intChildrenDepth);
+    }
+    else {
+        return null;
+    }
 }
 
 /* Returns an array of HtmlElement objects formatted for use on the
