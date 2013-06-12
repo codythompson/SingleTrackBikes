@@ -1,3 +1,13 @@
+<?php
+
+require_once("cms/datalayer.php");
+require_once("cms/carousel.php");
+
+$contentItems = getContentItems();
+$carousel = new Carousel("big-carousel", $contentItems);
+
+$carousel->writeElement();
+/*
                     <div id="big-carousel" class="carousel slide">
                         <ol class="carousel-indicators st-rounded">
                             <li data-target="#big-carousel" data-slide-to="0" class="active"></li>
@@ -58,3 +68,5 @@
                         </a>
                     </div>
                     <!-- end carousel -->
+*/
+?>

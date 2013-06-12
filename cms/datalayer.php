@@ -1,4 +1,6 @@
 <?php
+require_once("error.php");
+
 define("ST_PRODUCT_TYPE_ID_BIKES", 1);
 
 $dbconn_loc = "dbconn.php";
@@ -41,6 +43,24 @@ function GetNavLinks() {
         */)
     );
     return $navLinks;
+}
+
+function getContentItems($limit = 10) {
+    global $mysqli;
+
+    $query = " select ci.*, cil.css_location_class " .
+        "from single_track.content_item ci " .
+        "left join single_track.content_item_location cil " .
+        "on ci.content_item_location_id = cil.content_item_location_id " .
+        "order by order_num, content_item_id " .
+        "limit ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handlError($mysqli->error);
+    }
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+    return resultToArrayOfAssoc($stmt->get_result());
 }
 
 function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {

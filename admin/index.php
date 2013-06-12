@@ -21,7 +21,7 @@ if ($loggingIn) {
 <head>
     <title>ADMIN SECTION</title>
 
-    <link rel="styleshee" href="/styles/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/bootstrap.css" type="text/css" />
 </head>
 <body>
 <?php

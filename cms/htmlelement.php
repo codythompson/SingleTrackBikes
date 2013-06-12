@@ -24,7 +24,7 @@ class HtmlElement
 
         $this->attributes = array();
 
-        $this->associatedHeadElements = array();
+        //$this->associatedHeadElements = array();
 
         $this->textAfterChildren = false;
         $this->closeInOpenTag = false;
