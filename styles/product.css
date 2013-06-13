@@ -1,0 +1,19 @@
+.product-container {
+    margin-bottom: 2%;
+    border-radius: 8px;
+
+    color: #f66;
+    background-color: #444;
+}
+
+.product-container .product-container-inner {
+    padding: 0 5%;
+}
+
+.product-container h3 {
+    color: #fff;
+}
+
+.product-container .product-image img {
+    width: 100%
+}

@@ -1,24 +1,84 @@
-<div id="product-carousel" class="carousel slide">
-    <div class="carousel-inner st-rounded">
-        <div class="active item">
-            <img src="/images/trek_road_bike.jpg" alt="trek road bikes" />
-            <div class="carousel-caption">
-                <h3>Trek Road Bikes</h3>
-                <p>Trek Road Bikes description goes here. blah blah blah blah</p>
-            </div>
-        </div>
+<?php
+require_once("cms/datalayer.php");
+require_once("cms/product.php");
 
-        <div class="item">
-            <img src="/images/trek_mountain_bikes.jpg" alt="trek mountain bikes" />
-            <div class="carousel-caption">
-                <h3>Trek Mountain Bikes</h3>
-                <p>Trek Mountain Bikes description goes here. blah blah blah blah</p>
-            </div>
-        </div>
+$parentId = 0;
 
+if (!empty($_GET["parent_id"])) {
+    $parentId = intval($_GET["parent_id"]);
+}
+
+$prodInfo = getProductInfo($parentId);
+//var_dump($prodInfo);
+$prodObj = new Product("product_info", $prodInfo);
+
+$prodObj->writeElement();
+?>
+<!--
+<div class="container-fluid">
+
+<div class="row-fluid">
+    <div class="span4 product-container">
+        <div class="product-container-inner">
+            <h3>Trek Road Bikes</h3>
+            <div class="product-image">
+                <img src="/images/trek-road-bikes-square.png" alt="Trek Road Bikes" />
+            </div>
+            <p>Trek Road Bikes description goes here. blah blah blah blah</p>
+        </div>
     </div>
-    <a class="carousel-control-left left" href="#product-carousel"
-        data-slide="prev">&lsaquo;</a>
-    <a class="carousel-control-right right" href="#product-carousel"
-        data-slide="next">&rsaquo;</a>
+
+    <div class="span4 product-container">
+        <div class="product-container-inner">
+            <h3>Trek Road Bikes</h3>
+            <div class="product-image">
+                <img src="/images/trek-road-bikes-square.png" alt="Trek Road Bikes" />
+            </div>
+            <p>Trek Road Bikes description goes here. blah blah blah blah</p>
+        </div>
+    </div>
+
+    <div class="span4 product-container">
+        <div class="product-container-inner">
+            <h3>Trek Road Bikes</h3>
+            <div class="product-image">
+                <img src="/images/trek-road-bikes-square.png" alt="Trek Road Bikes" />
+            </div>
+            <p>Trek Road Bikes description goes here. blah blah blah blah</p>
+        </div>
+    </div>
 </div>
+
+<div class="row-fluid">
+    <div class="span4 product-container">
+        <div class="product-container-inner">
+            <h3>Trek Road Bikes</h3>
+            <div class="product-image">
+                <img src="/images/trek-road-bikes-square.png" alt="Trek Road Bikes" />
+            </div>
+            <p>Trek Road Bikes description goes here. blah blah blah blah</p>
+        </div>
+    </div>
+
+    <div class="span4 product-container">
+        <div class="product-container-inner">
+            <h3>Trek Road Bikes</h3>
+            <div class="product-image">
+                <img src="/images/trek-road-bikes-square.png" alt="Trek Road Bikes" />
+            </div>
+            <p>Trek Road Bikes description goes here. blah blah blah blah</p>
+        </div>
+    </div>
+
+    <div class="span4 product-container">
+        <div class="product-container-inner">
+            <h3>Trek Road Bikes</h3>
+            <div class="product-image">
+                <img src="/images/trek-road-bikes-square.png" alt="Trek Road Bikes" />
+            </div>
+            <p>Trek Road Bikes description goes here. blah blah blah blah</p>
+        </div>
+    </div>
+</div>
+</div>
+-->

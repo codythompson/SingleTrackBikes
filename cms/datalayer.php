@@ -112,6 +112,10 @@ function getProductInfo($intParentId, $intChildrenDepth = 1) {
         return null;
     }
 
+    if ($intParentId == 0) {
+        $intParentId = null;
+    }
+
     $query = "select * from single_track.product p ";
     if (empty($intParentId)) {
         $query .= "where p.product_parent_id is null";
