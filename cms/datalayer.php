@@ -1,7 +1,8 @@
 <?php
 require_once("error.php");
 
-define("ST_PRODUCT_TYPE_ID_BIKES", 1);
+define("ST_PRODUCT_ID_ROOT", 2);
+define("ST_PRODUCT_ID_BIKES", 2);
 
 $dbconn_loc = "dbconn.php";
 require($dbconn_loc);
@@ -55,7 +56,7 @@ function getContentItems($limit = 10) {
         "limit ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
-        handlError($mysqli->error);
+        handleError($mysqli->error);
     }
     $stmt->bind_param("i", $limit);
     $stmt->execute();
@@ -84,7 +85,7 @@ function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {
     return null;
 }
 
-function getProductInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
+function getProductTreeInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
     global $mysqli;
 
     if ($intChildrenDepth <= 0) {
@@ -97,7 +98,7 @@ function getProductInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
     for ($i = 0; $i < count($rows); $i++) {
         $row = $rows[$i];
         $intParentId = $row["product_id"];
-        $row["child_product"] = getProductInfo_helper($stmt, $intParentId,
+        $row["child_product"] = getProductInfoTree_helper($stmt, $intParentId,
             $intChildrenDepth - 1);
         $rows[$i] = $row;
     }
@@ -105,7 +106,7 @@ function getProductInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
     return $rows;
 }
 
-function getProductInfo($intParentId, $intChildrenDepth = 1) {
+function getProductInfoTree($intParentId, $intChildrenDepth = 1) {
     global $mysqli;
 
     if ($intChildrenDepth <= 0) {
@@ -118,26 +119,58 @@ function getProductInfo($intParentId, $intChildrenDepth = 1) {
 
     $query = "select * from single_track.product p ";
     if (empty($intParentId)) {
-        $query .= "where p.product_parent_id is null";
+        $query .= "where p.parent_product_id is null";
     }
     else { 
-        $query .= "where p.product_parent_id = ?";
+        $query .= "where p.parent_product_id = ?";
     }
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param("i", $intParentId);
     if ($stmt) {
-        return getProductInfo_helper($stmt, $intParentId, $intChildrenDepth);
+        return getProductInfoTree_helper($stmt, $intParentId, $intChildrenDepth);
     }
     else {
         return null;
     }
 }
 
+function getProductInfo($intProductId, $boolGetChildren) {
+    global $mysqli;
+
+    $pid = intval($intProductId);
+
+    $queryParent = "select * from single_track.product p " .
+        "where p.product_id = ?";
+    $stmt = $mysqli->prepare($queryParent);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->bind_param("i", $pid);
+    $stmt->execute();
+    $result = resultToArrayOfAssoc($stmt->get_result());
+    if (empty($result)) {
+        return null;
+    }
+    $result = $result[0];
+
+    if ($boolGetChildren) {
+        $queryChild = "select * from single_track.product p " .
+            "where p.parent_product_id = ?";
+        $stmt = $mysqli->prepare($queryChild);
+        $stmt->bind_param("i", $pid);
+        $stmt->execute();
+        $result["child_product"] = resultToArrayOfAssoc($stmt->get_result());
+    }
+
+    return $result;
+}
+
 /* Returns an array of HtmlElement objects formatted for use on the
  * bikes.php content page.
  */
 function getBikeCOsHtmlObjects() {
-    $coInfoArray = getTopLevelProductInfo(ST_PRODUCT_TYPE_ID_BIKES, 1);
+    $coInfoArray = getProductInfo(ST_PRODUCT_ID_ROOT, 2);
     $htmlEles = array();
     foreach($coInfoArray as $coInfo) {
         $rootEle = new HtmlElement("div", null, "media");
@@ -149,19 +182,19 @@ function getBikeCOsHtmlObjects() {
             $childEle->setAttribute("target", "_blank");
         }
     
-        if (!empty($coInfo["logo_url"])) {
+        if (!empty($coInfo["image_url"])) {
             $childEle->childElements[] = new HtmlElement("img", null,
                 "media-object");
             $childEle->childElements[0]->setAttribute("src",
-                $coInfo["logo_url"]);
+                $coInfo["image_url"]);
         }
         $rootEle->childElements[] = $childEle;
 
         $childEle = new HtmlElement("div", null, "media-body");
         $childEle->childElements[] = new HtmlElement("h3", null,
             "media-heading", $coInfo["name"]);
-        if (!empty($coInfo["short_descr"])) {
-            $childEle->childElements[] = new HtmlElement("p", null, null, $coInfo["short_descr"]);
+        if (!empty($coInfo["descr"])) {
+            $childEle->childElements[] = new HtmlElement("p", null, null, $coInfo["descr"]);
         }
         if (!empty($coInfo["offsite_url"])) {
             $childChildEle = new HtmlElement("p");

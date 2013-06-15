@@ -2,14 +2,25 @@
 require_once("cms/datalayer.php");
 require_once("cms/product.php");
 
-$parentId = 0;
+$productId = 1;
 
-if (!empty($_GET["parent_id"])) {
-    $parentId = intval($_GET["parent_id"]);
+if (!empty($_GET["product_id"])) {
+    $productId = intval($_GET["product_id"]);
 }
 
-$prodInfo = getProductInfo($parentId);
-//var_dump($prodInfo);
+$prodInfo = getProductInfo($productId, true);
+if (empty($prodInfo)) {
+    $prodInfo = getProductInfo(1, true);
+    if (empty($prodInfo)) {
+?>
+<div class="alert alert-error">
+<strong>Woops</strong>
+This page seems to be broken.
+</div>
+<?php
+    }
+}
+
 $prodObj = new Product("product_info", $prodInfo);
 
 $prodObj->writeElement();

@@ -18,7 +18,7 @@ insert into single_track.product
 (product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url)
 values (
 2,
-0,
+1,
 0,
 'Bikes',
 'Bike brands we sell',
@@ -31,7 +31,7 @@ null,
 insert into single_track.product
 (parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url)
 values (
-1,
+2,
 2,
 'Trek',
 'Trek makes awesome bikes! This description could be longer.',
@@ -44,7 +44,7 @@ null
 insert into single_track.product
 (parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url)
 values (
-1,
+2,
 2,
 'Surly',
 'Surly makes some awesome bikes. Needs more text here.',
