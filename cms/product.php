@@ -25,11 +25,12 @@ class Product extends HtmlElement {
                 $imageEle->childElements[0]->setAttribute("src", $imageUrl);
             }
             else {
-                $imageEle = new HtmlElement("img", null,
-                    "pull-left media-object");
+                $imageEle = new HtmlElement("img", null); //,
+                    //"pull-left media-object");
                 $imageEle->setAttribute("src", $imageUrl);
             }
-            $itemEleChilren[] = $imageEle;
+            $itemEleChildren[] = new HtmlElement("div", null,
+                "product-imagecontainer pull-left media-object", null, array($imageEle));
         }
 
         // make the product item body
@@ -54,6 +55,8 @@ class Product extends HtmlElement {
                 $offsiteLinkText = ST_PRODUCT_MISSING_OFFSITE_URL_TEXT;
             }
             $offLinkEle = new HtmlElement("a", null, null, $offsiteLinkText);
+            $offLinkEle->setAttribute("href", $offsiteLinkUrl);
+            $offLinkEle->setAttribute("target", "_blank");
             $bodyChildren[] = new HtmlElement("p", null, null, null,
                 array($offLinkEle));
         }
@@ -82,7 +85,10 @@ class Product extends HtmlElement {
             $baseChildren[] = $bgImage;
         }
 
-        $baseChildren[] = new HtmlElement("h2", null, null, $name);
+        $innerContEles = array();
+
+        $innerContEles[] = new HtmlElement("h2", null, null, $name);
+        $innerContEles[] = new HtmlElement("hr");
 
         if (empty($parentProduct["child_product"])) {
             $descr = null;
@@ -98,11 +104,12 @@ class Product extends HtmlElement {
             if (!empty($parentProduct["offsite_url_text"]))
                 $offsiteText = $parentProduct["offsite_url_text"];
 
-            $baseChildren[] = $this->getProductItem_LargeBGScroll(null, $descr,
+            $innerContEles[] = $this->getProductItem_LargeBGScroll(null, $descr,
                 $imageUrl, $offsiteUrl, $offsiteText, null);
         }
         else {
-            foreach($parentProduct["child_product"] as $childInfo) {
+            for($i = 0; $i < count($parentProduct["child_product"]); $i++) {
+                $childInfo = $parentProduct["child_product"][$i];
                 $name = ST_PRODUCT_MISSING_NAME_TEXT;
                 if (!empty($childInfo["name"]))
                     $name = $childInfo["name"];
@@ -122,10 +129,17 @@ class Product extends HtmlElement {
                 if (!empty($childInfo["product_id"]))
                     $productId = intval($childInfo["product_id"]);
 
-                $baseChildren[] = $this->getProductItem_LargeBGScroll($name,
+                $innerContEles[] = $this->getProductItem_LargeBGScroll($name,
                     $descr, $imageUrl, $offsiteUrl, $offsiteText,
                     ST_PRODUCT_URL . "?product_id=$productId");
+
+                if ($i < count($parentProduct["child_product"]) - 1) {
+                    $innerContEles[] = new HtmlElement("hr");
+                }
             }
+
+            $baseChildren[] = new HtmlElement("div", null,
+                "product-innercontainer st-rounded", null, $innerContEles);
         }
 
         parent::__construct("div", $cssId, "st-product-lgbgscroll st-rounded",
