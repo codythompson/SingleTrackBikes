@@ -5,7 +5,7 @@ require_once("cms/page.php");
 
 $title = "Bikes we sell";
 $cssHrefs = array(
-    "/styles/bikes.css");
+    "/styles/product.css");
 $jsSrcs = array();
 $navBar = new NavBar(GetNavLinks(), 1);
 $content = "content/bikes.php";
