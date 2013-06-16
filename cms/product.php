@@ -104,8 +104,6 @@ class Product extends HtmlElement {
             if (!empty($parentProduct["offsite_url_text"]))
                 $offsiteText = $parentProduct["offsite_url_text"];
 
-            //var_dump($this->getProductItem_LargeBGScroll(null, $descr, $imageUrl,
-                //$offsiteUrl, $offsiteText, null));
             $innerContEles[] = $this->getProductItem_LargeBGScroll(null, $descr,
                 $imageUrl, $offsiteUrl, $offsiteText, null);
 
@@ -149,6 +147,9 @@ class Product extends HtmlElement {
             null, $baseChildren);
     }
 
+    /*
+     * Carousel style page builder functions
+     */
     private function getItem_Carousel($title, $descr, $imageUrl, $bgImageUrl,
         $offsiteLinkUrl, $offsiteLinkText, $onsiteLinkUrl,
         $isActive = false) {
@@ -205,7 +206,7 @@ class Product extends HtmlElement {
         $baseChildren = array();
         
         $carouselItems = array();
-        if (empty($parenProduct["child_product"])) {
+        if (empty($parentProduct["child_product"])) {
             $descr = null;
             if (!empty($parentProduct["descr"]))
                 $descr = $parentProduct["descr"];
@@ -214,7 +215,7 @@ class Product extends HtmlElement {
                 $imageUrl = $parentProduct["image_url"];
             $bgImageUrl = null;
             if (!empty($parentProduct["background_image_url"])) {
-                $bImageUrl = $parentProduct["background_image_url"];
+                $bgImageUrl = $parentProduct["background_image_url"];
             }
             $offsiteUrl = null;
             if (!empty($parentProduct["offsite_url"]))
@@ -256,7 +257,7 @@ class Product extends HtmlElement {
                 if ($i == 0) {
                     $isActive = true;
                 }
-                $carouselItems[] = getItem_Carousel($name, $descr, $imageUrl,
+                $carouselItems[] = $this->getItem_Carousel($name, $descr, $imageUrl,
                     $bgImageUrl, $offsiteUrl, $offsiteText,
                     ST_PRODUCT_URL . "?product_id=$productId", $isActive);
             }
@@ -279,7 +280,7 @@ class Product extends HtmlElement {
             $this->build_LargeBGScroll($cssId, $parentProduct);
             break;
         case ST_PRODUCT_STYLE_CAROUSEL:
-            $this->bulid_Carousel($cssId, $parentProduct);
+            $this->build_Carousel($cssId, $parentProduct);
             break;
         default:
             $this->build_LargeBGScroll($cssId, $parentProduct);

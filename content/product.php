@@ -21,7 +21,17 @@ This page seems to be broken.
     }
 }
 
-$prodObj = new Product("product_info", $prodInfo);
+if ($prodInfo["product_style_id"] == ST_PRODUCT_STYLE_CAROUSEL) {
+?>
+<script type="text/javascript">
+$(document).ready( function () {
+    $('#product-info').carousel();
+});
+</script>
+<?php
+}
+
+$prodObj = new Product("product-info", $prodInfo);
 
 $prodObj->writeElement();
 ?>
