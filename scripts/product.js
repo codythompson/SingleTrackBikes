@@ -14,14 +14,14 @@ function carouselToggle(ele, carouselId) {
         carousel.carousel();
         ele.removeClass('product-paused');
         ele.attr('title', 'stop scrolling');
-        imgEle.attr('src', '/images/pause-icon.png');
+        imgEle.attr('src', '/images/pause-icon-hover.png');
         imgEle.attr('alt', 'stop scrolling');
     }
     else {
         carousel.carousel('pause');
         ele.addClass('product-paused');
         ele.attr('title', 'resume scrolling');
-        imgEle.attr('src', '/images/play-icon.png');
+        imgEle.attr('src', '/images/play-icon-hover.png');
         imgEle.attr('alt', 'resume scrolling');
     }
 }

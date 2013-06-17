@@ -1,9 +1,12 @@
+drop table if exists `single_track`.`product`;
+
 CREATE  TABLE `single_track`.`product` (
   `product_id` INT NOT NULL AUTO_INCREMENT ,
   `parent_product_id` INT NULL ,
   `product_style_id` INT NOT NULL ,
   `name` VARCHAR(255) NOT NULL ,
   `descr` TEXT NULL ,
+  `long_descr` TEXT NULL,
   `offsite_url` TEXT NULL ,
   `offsite_url_text` VARCHAR(255) NULL ,
   `image_url` TEXT NULL ,
