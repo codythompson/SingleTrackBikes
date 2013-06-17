@@ -2,4 +2,4 @@
 *.swp
 Thumbs.db
 pub.bat
-dbconn.php
+dbconn*

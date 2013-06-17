@@ -29,6 +29,30 @@ function removeQueryString($url) {
     return $result;
 }
 
+// adapted from http://php.net/manual/en/mysqli-stmt.bind-result.php#92505
+function fetchRows($stmt) {
+    $meta = $stmt->result_metadata(); 
+    while ($field = $meta->fetch_field()) 
+    { 
+        $params[] = &$row[$field->name]; 
+    } 
+
+    call_user_func_array(array($stmt, 'bind_result'), $params); 
+
+    while ($stmt->fetch()) { 
+        foreach($row as $key => $val) 
+        { 
+            $c[$key] = $val; 
+        } 
+        $result[] = $c; 
+    } 
+    if (!isset($result)) {
+        return null;
+    }
+
+    return $result;
+}
+
 function GetNavLinks() {
     global $mysqli;
 
@@ -40,11 +64,15 @@ function GetNavLinks() {
         return null;
     }
     $stmt->execute();
+    $result = fetchRows($stmt);
+    /* Apparently get_result() isn't supported on the server
     $result = $stmt->get_result();
     $result = resultToArrayOfAssoc($result);
+     */
     if (empty($result)) {
         return null;
     }
+    $stmt->close();
 
     $childQuery = "select * from nav_links nl " .
         "where parent_nav_link_id = ?";
@@ -59,7 +87,8 @@ function GetNavLinks() {
         $row = $result[$i];
         $parentId = intval($row["nav_link_id"]);
         $stmt->execute();
-        $children = resultToArrayOfAssoc($stmt->get_result());
+        $children = fetchRows($stmt);
+        //$children = resultToArrayOfAssoc($stmt->get_result());
         if (count($children) > 0) {
             $row["children"] = $children;
         }
@@ -80,7 +109,10 @@ function getFooterLinks() {
         return null;
     }
     $stmt->execute();
+    /*
     $result = resultToArrayOfAssoc($stmt->get_result());
+     */
+    $result = fetchRows($stmt);
     return $result;
 }
 
@@ -100,31 +132,13 @@ function getContentItems($limit = 10) {
     }
     $stmt->bind_param("i", $limit);
     $stmt->execute();
+    /*
     return resultToArrayOfAssoc($stmt->get_result());
+     */
+    return fetchRows($stmt);
 }
 
-function getTopLevelProductInfo($intTypeId, $intChildrenDepth) {
-    global $mysqli;
-
-    $query = "select * from single_track.product p where p.product_type_id = ?";
-    $query .= " and p.product_parent_id is null";
-    $stmt = $mysqli->prepare($query);
-    if ($stmt) {
-        $stmt->bind_param("i", $intTypeId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $rows = array();
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-
-        return $rows;
-    }
-
-    return null;
-}
-
+/*
 function getProductTreeInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
     global $mysqli;
 
@@ -173,6 +187,7 @@ function getProductInfoTree($intParentId, $intChildrenDepth = 1) {
         return null;
     }
 }
+ */
 
 function getProductInfo($intProductId, $boolGetChildren) {
     global $mysqli;
@@ -188,7 +203,10 @@ function getProductInfo($intProductId, $boolGetChildren) {
     }
     $stmt->bind_param("i", $pid);
     $stmt->execute();
+    $result = fetchRows($stmt);
+    /*
     $result = resultToArrayOfAssoc($stmt->get_result());
+     */
     if (empty($result)) {
         return null;
     }
@@ -200,7 +218,8 @@ function getProductInfo($intProductId, $boolGetChildren) {
         $stmt = $mysqli->prepare($queryChild);
         $stmt->bind_param("i", $pid);
         $stmt->execute();
-        $result["child_product"] = resultToArrayOfAssoc($stmt->get_result());
+        //$result["child_product"] = resultToArrayOfAssoc($stmt->get_result());
+        $result["child_product"] = fetchRows($stmt);
     }
 
     return $result;
