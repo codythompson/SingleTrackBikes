@@ -24,7 +24,7 @@ class Carousel extends HtmlElement {
         foreach($contentItems as $itemInfo) {
             $itemChildren = array();
             
-            $itemChildren[] = new HtmlElement("img");
+            $itemChildren[] = new HtmlElement("img", null, "st-rounded");
             $itemChildren[0]->setAttribute("src", $itemInfo["bg_image_url"]);
             $itemChildren[0]->setAttribute("alt", $itemInfo["bg_image_alt"]);
             $itemChildren[0]->closeInOpenTag = true;
