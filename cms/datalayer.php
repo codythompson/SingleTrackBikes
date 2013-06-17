@@ -138,6 +138,27 @@ function getContentItems($limit = 10) {
     return fetchRows($stmt);
 }
 
+function getAnnouncements($limit) {
+    global $mysqli;
+
+    $query = "select " .
+        "a.title,  " .
+        "a.text,  " .
+        "DATE_FORMAT(a.date, '%c/%e/%Y %l:%i') as date " .
+        "from announcements a " .
+        "order by a.date desc " .
+        "limit ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+
+    return fetchRows($stmt);
+}
+
 /*
 function getProductTreeInfo_helper($stmt, &$intParentId, $intChildrenDepth) {
     global $mysqli;

@@ -1,5 +1,7 @@
 <?php
 require_once("navbar.php");
+require_once("announcements.php");
+require_once("datalayer.php");
 
 define("ST_FOOTER_CONTENT_FILE", "content/footer.html");
 /*
@@ -24,6 +26,9 @@ define("ST_FOOTER_CONTENT_FILE", "content/footer.html");
  */
 function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
     $footerLinksInfo) {
+
+    $ann = getAnnouncements(3);
+    $ann = new Announcements("st-anns", $ann);
 ?>
 <!DOCTYPE html>
     <html lang="en">
@@ -75,6 +80,10 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
                         </a>
                     </h1>
 
+<?php
+    $ann->writeElement();
+?>
+<!--
                     <div class="hidden-750 well">
                         <h3 class="st-red">Announcements</h3>
                         <hr>
@@ -93,6 +102,7 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
                         </div>
                         Something Something and Something Else. This is Filler Text.
                     </div>
+-->
                 </div>
 
                 <div class="span9">
