@@ -66,16 +66,16 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
         <div class="container">
             <div class="row">
 
-                <div id="st-left-column" class="span2">
-                    <a href="/">
-                        <h1>
-                            <img src="images/single_track_logo_small.jpg"
+                <div id="st-left-column" class="span3">
+                    <h1 id="st-logo">
+                        <a href="/">
+                            <img src="images/st_logo_no_fill.png"
                                 alt="Single Track Bicycle Shop. On the Right Track."
                                 class="st-rounded" />
-                        </h1>
-                    </a>
+                        </a>
+                    </h1>
 
-                    <div class="hidden-750 st-rounded st-grey">
+                    <div class="hidden-750 well">
                         <h3 class="st-red">Announcements</h3>
                         <hr>
                         <div>
@@ -95,7 +95,7 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
                     </div>
                 </div>
 
-                <div class="span10">
+                <div class="span9">
 <?php
     $navBar->writeElement();
 

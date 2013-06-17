@@ -3,6 +3,7 @@ body {
     background-repeat: repeat-x;
 }
 
+
 .st-red {
     color: #D44;
 }
@@ -43,6 +44,12 @@ body {
 .st-floating h5,
 .st-floating h6 {
     color: #fff;
+}
+
+#st-logo a,
+#st-logo a img
+{
+    width: 100%;
 }
 
 #st-left-column .st-grey {
