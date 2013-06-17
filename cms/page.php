@@ -1,6 +1,7 @@
 <?php
 require_once("navbar.php");
 
+define("ST_FOOTER_CONTENT_FILE", "content/footer.html");
 /*
  * Echos the HTMl for a web page
  *
@@ -21,7 +22,8 @@ require_once("navbar.php");
  * content
  * A string filepath of the html/php content file to be included
  */
-function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content) {
+function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
+    $footerLinksInfo) {
 ?>
 <!DOCTYPE html>
     <html lang="en">
@@ -74,7 +76,7 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content) {
                     </a>
 
                     <div class="hidden-750 st-rounded st-grey">
-                        <h3 class="st-red">Twitter Feed goes here</h3>
+                        <h3 class="st-red">Announcements</h3>
                         <hr>
                         <div>
                             <a>Something happened on twitter</a>
@@ -106,6 +108,19 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content) {
 
             </div>
             <!-- end main row -->
+
+            <div class="well st-footer">
+<?php
+    require(ST_FOOTER_CONTENT_FILE);
+?>
+                <hr />
+<?php
+    foreach($footerLinksInfo as $fLink) {
+        echo "<a href=\"" . $fLink["link_url"] . "\">" . $fLink["link_text"] . 
+            "</a>";
+    }
+?>
+            </div>
 
         </div>
         <!-- end container -->

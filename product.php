@@ -11,5 +11,7 @@ $jsSrcs = array(
 $navBar = new NavBar(GetNavLinks(), "/bikes.php");
 $content = "content/product.php";
 
-MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content);
+$footerLinks = getFooterLinks();
+
+MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content, $footerLinks);
 ?>

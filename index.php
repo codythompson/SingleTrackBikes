@@ -10,5 +10,7 @@ $jsSrcs = array();
 $navBar = new NavBar(GetNavLinks(), "/");
 $content = "content/home.php";
 
-MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content);
+$footerLinks = getFooterLinks();
+
+MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content, $footerLinks);
 ?>

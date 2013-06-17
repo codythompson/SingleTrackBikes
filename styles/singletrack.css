@@ -53,11 +53,11 @@ body {
     width: 100%;
 }
 
-#st-footer {
-    padding: 8px 32px;
+.st-footer a {
+    margin-right: 1%;
 }
 
-@media (max-width: 750px) {
+@media (max-width: 979px) {
     .hidden-750 {
         display:none !important;
     }
