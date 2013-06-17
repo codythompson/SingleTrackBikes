@@ -102,7 +102,7 @@
     width: 10%;
 
     color: #f66;
-    background-color: #eee;
+    background: none;
 }
 
 .st-product-carousel .product-navs button:hover {
