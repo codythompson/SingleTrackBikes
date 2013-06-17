@@ -17,7 +17,20 @@ function resultToArrayOfAssoc($result) {
     return $rows;
 }
 
+function removeQueryString($url) {
+    $indexOfQ = strpos($url, "?");
+    if ($indexOfQ === false) {
+        return $url;
+    }
+    $result = substr($url, 0, $indexOfQ);
+    if ($result === false) {
+        return $url;
+    }
+    return $result;
+}
+
 function GetNavLinks() {
+    /*
     $navLinks = array(
         array("text" => "Home",
             "hover_title" => "home page",
@@ -43,6 +56,45 @@ function GetNavLinks() {
             "href" => "/")
         );
     return $navLinks;
+     */
+
+    global $mysqli;
+
+    $query = "select * from nav_links nl " .
+        "where parent_nav_link_id is null";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $result = resultToArrayOfAssoc($result);
+    if (empty($result)) {
+        return null;
+    }
+
+    $childQuery = "select * from nav_links nl " .
+        "where parent_nav_link_id = ?";
+    $parentId;
+    $stmt = $mysqli->prepare($childQuery);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->bind_param("i", $parentId);
+    for($i = 0; $i < count($result); $i++) {
+        $row = $result[$i];
+        $parentId = intval($row["nav_link_id"]);
+        $stmt->execute();
+        $children = resultToArrayOfAssoc($stmt->get_result());
+        if (count($children) > 0) {
+            $row["children"] = $children;
+        }
+        $result[$i] = $row;
+    }
+
+    return $result;
 }
 
 function getContentItems($limit = 10) {
@@ -57,6 +109,7 @@ function getContentItems($limit = 10) {
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
+        return null;
     }
     $stmt->bind_param("i", $limit);
     $stmt->execute();
@@ -164,52 +217,5 @@ function getProductInfo($intProductId, $boolGetChildren) {
     }
 
     return $result;
-}
-
-/* Returns an array of HtmlElement objects formatted for use on the
- * bikes.php content page.
- */
-function getBikeCOsHtmlObjects() {
-    $coInfoArray = getProductInfo(ST_PRODUCT_ID_ROOT, 2);
-    $htmlEles = array();
-    foreach($coInfoArray as $coInfo) {
-        $rootEle = new HtmlElement("div", null, "media");
-    
-        $childEle = new HtmlElement("span", null, "pull-left st-imagelink");
-        if (!empty($coInfo["offsite_url"])) {
-            $childEle->tagName = "a";
-            $childEle->setAttribute("href", $coInfo["offsite_url"]);
-            $childEle->setAttribute("target", "_blank");
-        }
-    
-        if (!empty($coInfo["image_url"])) {
-            $childEle->childElements[] = new HtmlElement("img", null,
-                "media-object");
-            $childEle->childElements[0]->setAttribute("src",
-                $coInfo["image_url"]);
-        }
-        $rootEle->childElements[] = $childEle;
-
-        $childEle = new HtmlElement("div", null, "media-body");
-        $childEle->childElements[] = new HtmlElement("h3", null,
-            "media-heading", $coInfo["name"]);
-        if (!empty($coInfo["descr"])) {
-            $childEle->childElements[] = new HtmlElement("p", null, null, $coInfo["descr"]);
-        }
-        if (!empty($coInfo["offsite_url"])) {
-            $childChildEle = new HtmlElement("p");
-            $childChildEle->childElements[] = new HtmlElement("a", null, null,
-                "Visit the " . $coInfo["name"] . " home page");
-            $childChildEle->childElements[0]->setAttribute("href",
-                $coInfo["offsite_url"]);
-            $childChildEle->childElements[0]->setAttribute("target", "_blank");
-            $childEle->childElements[] = $childChildEle;
-        }
-        $rootEle->childElements[] = $childEle;
-
-        $htmlEles[] = $rootEle;
-    }
-
-    return $htmlEles;
 }
 ?>

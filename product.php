@@ -8,7 +8,7 @@ $cssHrefs = array(
     "/styles/product.css");
 $jsSrcs = array(
     "/scripts/product.js");
-$navBar = new NavBar(GetNavLinks(), 0);
+$navBar = new NavBar(GetNavLinks(), "/bikes.php");
 $content = "content/product.php";
 
 MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content);

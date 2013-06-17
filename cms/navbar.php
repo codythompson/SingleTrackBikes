@@ -4,27 +4,28 @@ require_once("htmlelement.php");
  * navLinks
  * An array of associative arrays containing information for the navbar links
  * each associative array should have the following structure
- * "text" => the text to be displayed for the link
- * "hover_title" => the text to be displayed on hover (will be inserted as the
+ * "link_text" => the text to be displayed for the link
+ * "link_hover_text" => the text to be displayed on hover (will be inserted as the
  *                  title attribute). This is optional.
- * "href" => the url for the link (will be inserted as the href attribute).
- * "dropdown_links" => an array of associatiave arrays formatted the same
+ * "link_url" => the url for the link (will be inserted as the href attribute).
+ * "children" => an array of associatiave arrays formatted the same
  *                     as 'navLinks'
  *
  * activeNavLinkIndex
  * The 'navLinks' index of the current page
  */
 class NavBar extends HtmlElement {
-    public function __construct($navLinks, $activeIndex) {
+    public function __construct($navLinks, $activeUrl) {
         parent::__construct("ul", null, "nav nav-pills");
 
         for($i = 0; $i < count($navLinks); $i++) {
             $link = $navLinks[$i];
-            $isDDL = array_key_exists("dropdown_links", $link);
+            $isDDL = array_key_exists("children", $link);
 
             $childItem = new HtmlElement("li");
             $classes = array();
-            if ($i == $activeIndex) {
+            $linkUrlBase = removeQueryString($link["link_url"]);
+            if ($linkUrlBase == $activeUrl) {
                 $classes[] = "active";
             }
             if ($isDDL) {
@@ -41,10 +42,10 @@ class NavBar extends HtmlElement {
             }
 
             $childLink = new HtmlElement("a");
-            $childLink->text = $link["text"];
-            $childLink->setAttribute("href", $link["href"]);
+            $childLink->text = $link["link_text"];
+            $childLink->setAttribute("href", $link["link_url"]);
             if (array_key_exists("hover_title", $link)) {
-                $childLink->setAttribute("title", $link["hover_title"]);
+                $childLink->setAttribute("title", $link["link_hover_text"]);
             }
 
             if ($isDDL) {
@@ -55,15 +56,15 @@ class NavBar extends HtmlElement {
 
                 $childUl = new HtmlElement("ul", null, "dropdown-menu");
                 $childUl->setAttribute("role", "menu");
-                $subLinks = $link["dropdown_links"];
+                $subLinks = $link["children"];
                 foreach($subLinks as $subLink) {
                     $childUlItem = new HtmlElement("li");
                     $childUlItemLink = new HtmlElement("a");
-                    $childUlItemLink->text = $subLink["text"];
-                    $childUlItemLink->setAttribute("href", $subLink["href"]);
-                    if (array_key_exists("hover_title", $subLink)) {
+                    $childUlItemLink->text = $subLink["link_text"];
+                    $childUlItemLink->setAttribute("href", $subLink["link_url"]);
+                    if (array_key_exists("link_hover_text", $subLink)) {
                         $childUlItemLink->setAttribute("title",
-                            $subLink["hover_title"]);
+                            $subLink["link_hover_text"]);
                     }
                     $childUlItem->childElements[] = $childUlItemLink;
                     $childUl->childElements[] = $childUlItem;

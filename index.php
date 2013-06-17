@@ -7,7 +7,7 @@ $title = "Single Track Bikes - Flagstaff Arizona";
 $cssHrefs = array(
     "/styles/st-carousel.css");
 $jsSrcs = array();
-$navBar = new NavBar(GetNavLinks(), 0);
+$navBar = new NavBar(GetNavLinks(), "/");
 $content = "content/home.php";
 
 MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content);
