@@ -6,7 +6,8 @@ require_once("cms/page.php");
 $title = "Single Track Bikes - Products";
 $cssHrefs = array(
     "/styles/product.css");
-$jsSrcs = array();
+$jsSrcs = array(
+    "/scripts/product.js");
 $navBar = new NavBar(GetNavLinks(), 0);
 $content = "content/product.php";
 

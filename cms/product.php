@@ -9,6 +9,9 @@ define("ST_PRODUCT_MISSING_OFFSITE_URL_TEXT", "Visit the dealer's website");
 define("ST_PRODUCT_URL", "/product.php");
 
 class Product extends HtmlElement {
+    /*
+     * Functions for building the Larger background scroll style product page
+     */
     private function getProductItem_LargeBGScroll($title, $descr, $imageUrl,
             $offsiteLinkUrl, $offsiteLinkText, $onsiteLinkUrl) {
         $itemEleChildren = array();
@@ -143,12 +146,13 @@ class Product extends HtmlElement {
         $baseChildren[] = new HtmlElement("div", null,
             "product-innercontainer st-rounded", null, $innerContEles);
 
-        parent::__construct("div", $cssId, "st-product-lgbgscroll st-rounded",
+        parent::__construct("div", $cssId,
+            "st-product-lgbgscroll st-product st-rounded",
             null, $baseChildren);
     }
 
     /*
-     * Carousel style page builder functions
+     * Carousel page style builder functions
      */
     private function getItem_Carousel($title, $descr, $imageUrl, $bgImageUrl,
         $offsiteLinkUrl, $offsiteLinkText, $onsiteLinkUrl,
@@ -157,13 +161,34 @@ class Product extends HtmlElement {
         $itemEles = array();
 
         if (!empty($bgImageUrl)) {
-            $bgImage = new HtmlElement("img", null, "product-bgimage");
+            $bgImage = new HtmlElement("img", null,
+                "product-bgimage st-rounded");
             $bgImage->setAttribute("src", $bgImageUrl);
             $bgImage->setAttribute("alt", $title);
             $itemEles[] = $bgImage;
         }
 
         $contentEles = array();
+
+        if (!empty($imageUrl)) {
+            $imgEle = new HtmlElement("img", null, "product-image");
+            $imgEle->setAttribute("src", $imageUrl);
+            if (!empty($title)) {
+                $imgEle->setAttribute("alt", $title);
+            }
+
+            if (empty($onsiteLinkUrl)) {
+                $contentEles[] = new HtmlElement("span", null,
+                    "product-imagecont pull-left", null, array($imgEle));
+            }
+            else {
+                $imgLink = new HtmlElement("a", null,
+                    "product-imagecont pull-left", null, array($imgEle));
+                $imgLink->setAttribute("href", $onsiteLinkUrl);
+                $contentEles[] = $imgLink;
+            }
+        }
+
         if (!empty($title)) {
             if (empty($onsiteLinkUrl)) {
                 $contentEles[] = new HtmlElement("h3", null, null, $title);
@@ -181,6 +206,7 @@ class Product extends HtmlElement {
         if (!empty($offsiteLinkUrl)) {
             $offLink = new HtmlElement("a");
             $offLink->setAttribute("href", $offsiteLinkUrl);
+            $offLink->setAttribute("target", "_blank");
             if (empty($offsiteLinkText)) {
                 $offLink->text = ST_PRODUCT_MISSING_OFFSITE_URL_TEXT;
             }
@@ -192,7 +218,7 @@ class Product extends HtmlElement {
         }
 
         $itemEles[] = new HtmlElement("div", null,
-            "product-carouselcaption st-rounded", null, $contentEles); 
+            "carousel-caption st-rounded", null, $contentEles); 
 
         $cssClass = "item";
         if ($isActive) {
@@ -204,6 +230,13 @@ class Product extends HtmlElement {
 
     private function build_Carousel($cssId, $parentProduct) {
         $baseChildren = array();
+
+        $name = ST_PRODUCT_STYLE_TILES;
+        if (!empty($parentProduct["name"])) {
+            $name = $parentProduct["name"];
+        }
+        $baseChildren[] = new HtmlElement("h2", null,
+            "product-title st-rounded", $name);
         
         $carouselItems = array();
         if (empty($parentProduct["child_product"])) {
@@ -266,10 +299,60 @@ class Product extends HtmlElement {
         $baseChildren[] = new HtmlElement("div", null,
             "carousel-inner st-rounded", null, $carouselItems);
 
-        parent::__construct("div", $cssId, "carousel slide", null,
+        if (count($carouselItems > 1)) {
+            $navEles = array();
+            $leftArrow = new HtmlElement("button", null, "pull-left");
+            $leftArrow->setAttribute("onmouseup",
+                "carouselSlidePrev('$cssId')");
+            $leftArrow->setAttribute("title", "scroll left");
+            $lAImg = new HtmlElement("img");
+            $lAImg->setAttribute("src", "/images/left-arrow.png");
+            $lAImg->setAttribute("alt", "slide left");
+            $leftArrow->childElements[] = $lAImg;
+            $navEles[] = $leftArrow;
+
+            $pauseEle = new HtmlElement("button", null, "product-pause");
+            $pauseEle->setAttribute("title", "stop scrolling");
+            $pauseEle->setAttribute("onmouseup",
+                "carouselToggle(this, '$cssId')");
+            $pauseImg = new HtmlElement("img");
+            $pauseImg->setAttribute("src", "/images/pause-icon.png");
+            $pauseImg->setAttribute("alt", "stop scrolling");
+            $pauseEle->childElements[] = $pauseImg;
+            $navEles[] = $pauseEle;
+
+            $rightArrow = new HtmlElement("button", null, "pull-right");
+            $rightArrow->setAttribute("onmouseup",
+                "carouselSlideNext('$cssId')");
+            $rightArrow->setAttribute("title", "scroll right");
+            $rAImg = new HtmlElement("img");
+            $rAImg->setAttribute("src", "/images/right-arrow.png");
+            $rAImg->setAttribute("alt", "slide right");
+            $rightArrow->childElements[] = $rAImg;
+            $navEles[] = $rightArrow;
+
+            $clearEle = new HtmlElement("div");
+            $clearEle->setAttribute("style", "clear: both;");
+            $navEles[] = $clearEle;
+
+            $baseChildren[] = new HtmlElement("div", null,
+                "product-navs st-rounded", null, $navEles);
+        }
+
+        parent::__construct("div", $cssId,
+            "carousel slide st-product st-product-carousel st-rounded", null,
             $baseChildren);
     }
 
+    /*
+     * Rows of 3 page style builder functions
+     */
+    private function build_rowsOf3($cssId, $parentProduct) {
+    }
+
+    /*
+     * Constructor
+     */
     public function __construct($cssId, $parentProduct) {
         $styleId = 0;
         if (!empty($parentProduct["product_style_id"])) {

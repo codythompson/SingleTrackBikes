@@ -1,5 +1,30 @@
+.st-product h1,
+.st-product h2,
+.st-product h3,
+.st-product h4,
+.st-product h5,
+.st-product h6,
+.st-product a
+{
+    font-weight: 700;
+    color: #eee;
+}
+
+.st-product a:hover
+{
+    color: #fff;
+    text-decoration: underline;
+}
+
+/*
+ * Large background scroll styles
+ */
 .st-product-lgbgscroll {
     position: relative;
+}
+
+.st-product-lgbgscroll .product-bgimage {
+    width: 100%
 }
 
 .st-product-lgbgscroll hr {
@@ -27,20 +52,66 @@
     background-image:url('/images/grey_bg.png');
 }
 
-.st-product-lgbgscroll h1,
-.st-product-lgbgscroll h2,
-.st-product-lgbgscroll h3,
-.st-product-lgbgscroll h4,
-.st-product-lgbgscroll h5,
-.st-product-lgbgscroll h6,
-.st-product-lgbgscroll a
-{
-    font-weight: 700;
-    color: #eee;
+@media (max-width: 767px) {
+    .st-product-lgbgscroll .product-innercontainer {
+        width: 86%;
+    }
 }
 
-.st-product-lgbgscroll a:hover
-{
+/*
+ * Carousel Styles
+ */
+.st-product-carousel {
+    position: relative;
+}
+
+.st-product-carousel h2.product-title {
+    padding: 1%;
+
     color: #fff;
-    text-decoration: underline;
+    background-color: #555;
+}
+
+.st-product-carousel .product-bgimage {
+    width: 100%;
+}
+
+.st-product-carousel .carousel-caption p {
+    color: #f66;
+}
+
+.st-product-carousel .product-imagecont {
+    width: 15%;
+    margin-top: 2%;
+    margin-right: 2%;
+}
+
+.st-product-carousel .product-navs {
+    margin-top: 1%;
+    padding: 1% 2%;
+
+    text-align: center;
+
+    background-color: #555;
+}
+
+.st-product-carousel .product-navs button {
+    border-style: none;
+    border-radius: 4px;
+    padding: 1% 0;
+    width: 10%;
+
+    color: #f66;
+    background-color: #eee;
+}
+
+.st-product-carousel .product-navs button:hover {
+    color: #fff;
+    background-color: #d44;
+}
+
+.st-product-carousel .product-navs button.product-pause {
+}
+
+.st-product-carousel .product-navs button.product-pause:hover {
 }

@@ -28,6 +28,8 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content) {
     <head>
         <title><?php echo $title; ?></title>
 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <link rel="stylesheet" href="styles/bootstrap.css" type="text/css" />
         <link rel="stylesheet" href="styles/bootstrap-responsive.css" type="text/css" />
         <link rel="stylesheet" href="styles/singletrack.css" type="text/css" />

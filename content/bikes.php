@@ -16,6 +16,16 @@ This page seems to be broken.
     }
 }
 
+if ($prodInfo["product_style_id"] == ST_PRODUCT_STYLE_CAROUSEL) {
+?>
+<script type="text/javascript">
+$(document).ready( function () {
+    $('#bikes-info').carousel();
+});
+</script>
+<?php
+}
+
 $prodObj = new Product("bikes-info", $prodInfo);
 
 $prodObj->writeElement();

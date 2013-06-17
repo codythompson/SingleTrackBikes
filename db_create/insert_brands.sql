@@ -11,7 +11,7 @@ null,
 null,
 null,
 null,
-null
+'/images/Front_COUNTER.JPG'
 );
 
 insert into single_track.product
@@ -38,7 +38,7 @@ values (
 'http://www.trekbikes.com/us/en/',
 'Visit Trek\'s website.',
 '/images/trek-logo-large-white-text.png',
-null
+'/images/ION_PRO.jpg'
 );
 
 insert into single_track.product
@@ -51,5 +51,5 @@ values (
 'http://surlybikes.com/',
 'Visit Surly\'s website.',
 '/images/surly-logo.gif',
-null
+'/images/SDC10465.JPG'
 );
