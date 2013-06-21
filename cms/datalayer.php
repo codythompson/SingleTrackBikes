@@ -138,10 +138,11 @@ function getContentItems($limit = 10) {
     return fetchRows($stmt);
 }
 
-function getAnnouncements($limit) {
+function getAnnouncements($limit = 3) {
     global $mysqli;
 
     $query = "select " .
+        "a.announcement_id,  " .
         "a.title,  " .
         "a.text,  " .
         "DATE_FORMAT(a.date, '%c/%e/%Y %l:%i') as date " .

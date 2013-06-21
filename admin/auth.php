@@ -2,6 +2,7 @@
 // TODO - check if user exists before adding to db
 
 require("../cms/dbconn.php");
+require_once("localvars.php");
 
 session_start();
 

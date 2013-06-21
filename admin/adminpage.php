@@ -14,11 +14,24 @@ function makePage($contentFile) {
 <title>SingleTrack admin area</title>
 
 <link rel="stylesheet" href="/styles/bootstrap.css" type="text/css" />
+
+<script type="text/javascript" src="/scripts/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="/scripts/bootstrap.js"></script>
 
 </head>
 
 <body>
+
+<div>
+    <ul class="nav nav-pills">
+        <li>
+            <form action="login.php" method="post">
+                <input type="hidden" name="form_type" value="logout" />
+                <input class="btn btn-info" type="submit" value="logout" />
+            </form>
+        </li>
+    </ul>
+</div>
 
 <?php
     require($contentFile);
