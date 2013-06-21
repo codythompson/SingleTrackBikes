@@ -1,7 +1,9 @@
 <?php
 // TODO - check if user exists before adding to db
 
-require("dbconn.php");
+require("../cms/dbconn.php");
+
+session_start();
 
 function generateSalt($numChars = 16) {
     $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
@@ -49,7 +51,6 @@ function logIn($uname, $pword) {
         $hash = crypt($pword, "$2a$10$" . $salt);
 
         if (strcmp($uHash, $hash) == 0) {
-            session_start();
             $_SESSION["_user_name_"] = $uname;
             $_SESSION["_user_ticks_"] = 5;
 
@@ -60,13 +61,22 @@ function logIn($uname, $pword) {
     return false;
 }
 
-function authed($redirect = null) {
+function logOut() {
+    session_destroy();
+}
+
+function authed($redirect = true) {
     if (isset($_SESSION["_user_name_"])) {
         return $_SESSION["_user_name_"];
     }
     else {
-        //TODO REDIRECT
-        return false;
+        if ($redirect) {
+            header("location: http://" . ST_LOCATION . "/admin/login.php");
+            die();
+        }
+        else {
+            return false;
+        }
     }
 }
 ?>

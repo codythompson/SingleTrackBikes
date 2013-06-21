@@ -2,4 +2,5 @@
 *.swp
 Thumbs.db
 pub.bat
+hardpub.bat
 dbconn*
