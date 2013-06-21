@@ -1,0 +1,15 @@
+.st-content-item {
+    margin-bottom: 16px;
+}
+
+.st-content-edit-area {
+    width: 500px;
+    height: 300px;
+
+    color: #f66;
+    background-color: #686868;
+}
+
+.st-content-edit-area hr {
+    border: 2px dashed #eee;
+}

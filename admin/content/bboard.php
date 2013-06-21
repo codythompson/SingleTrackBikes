@@ -144,7 +144,7 @@ if (!empty($succMess)) {
 <div>
 <h1>Bulletin Board Edit Page</h1>
 
-<p>
+<p class="lead">
 All bulletins in the system are listed below.<br/>
 Only the most recent <strong>3</strong> will be displayed.
 </p>

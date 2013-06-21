@@ -14,9 +14,11 @@ function makePage($contentFile, $cssHrefs = array(), $scriptSrcs = array()) {
 <title>SingleTrack admin area</title>
 
 <link rel="stylesheet" href="/styles/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/styles/admin.css" type="text/css" />
 
 <script type="text/javascript" src="/scripts/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="/scripts/bootstrap.js"></script>
+<script type="text/javascript" src="/scripts/nicEdit.js"></script>
 
 <?php
     foreach($scriptSrcs as $src) {

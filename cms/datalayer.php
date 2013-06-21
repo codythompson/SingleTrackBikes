@@ -116,25 +116,26 @@ function getFooterLinks() {
     return $result;
 }
 
-function getContentItems($limit = 10) {
+function getContentItems($limit = 0) {
     global $mysqli;
 
-    $query = " select ci.*, cil.css_location_class " .
+    $query = " select ci.*, cil.css_location_class, cil.name as loc_name " .
         "from single_track.content_item ci " .
         "left join single_track.content_item_location cil " .
         "on ci.content_item_location_id = cil.content_item_location_id " .
-        "order by order_num, content_item_id " .
-        "limit ?";
+        "order by order_num, content_item_id ";
+    if ($limit > 0) {
+        $query .= "limit ?";
+    }
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
         return null;
     }
-    $stmt->bind_param("i", $limit);
+    if ($limit > 0) {
+        $stmt->bind_param("i", $limit);
+    }
     $stmt->execute();
-    /*
-    return resultToArrayOfAssoc($stmt->get_result());
-     */
     return fetchRows($stmt);
 }
 
