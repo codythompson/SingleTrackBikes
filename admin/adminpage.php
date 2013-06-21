@@ -48,6 +48,9 @@ function makePage($contentFile, $cssHrefs = array(), $scriptSrcs = array()) {
                 <input class="btn btn-info" type="submit" value="logout" />
             </form>
         </li>
+        <li>
+            <a href="/admin" class="btn btn-info">Admin Home</a>
+        </li>
     </ul>
 </div>
 

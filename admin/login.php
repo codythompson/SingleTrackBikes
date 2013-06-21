@@ -61,7 +61,7 @@ if (isset($_POST["form_type"]) &&
     
         $loginSuccess = logIn($uname, $pword);
         if ($loginSuccess) {
-            makeLogOutForm("<strong>Logged In</strong>");
+            makeLogOutForm("<strong>Logged In</strong> <a href=\"/admin\" class=\"btn btn-success\">Continue</a>");
         }
         else {
             logOut();

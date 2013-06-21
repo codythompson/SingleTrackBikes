@@ -2,6 +2,7 @@
 // TODO - check if user exists before adding to db
 
 require("../cms/dbconn.php");
+require("../cms/datalayer.php");
 require_once("localvars.php");
 
 session_start();
@@ -45,7 +46,9 @@ function logIn($uname, $pword) {
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param("s", $uname);
     $stmt->execute();
-    if ($row = $stmt->get_result()->fetch_assoc()) {
+    $rows = fetchRows($stmt);
+    if (count($rows) == 1) {
+        $row = $rows[0];
         $salt = $row["user_salt"];
         $uHash = $row["user_hash"];
 
