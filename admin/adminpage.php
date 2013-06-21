@@ -1,7 +1,7 @@
 <?php
 require_once("auth.php");
 
-function makePage($contentFile, $scriptSrcs = array()) {
+function makePage($contentFile, $cssHrefs = array(), $scriptSrcs = array()) {
 
     $authed = authed();
     if ($authed === false) {
@@ -22,6 +22,14 @@ function makePage($contentFile, $scriptSrcs = array()) {
     foreach($scriptSrcs as $src) {
 ?>
     <script type="text/javascript" src="<?php echo $src ?>"></script>
+<?php
+    }
+?>
+
+<?php
+    foreach($cssHrefs as $href) {
+?>
+    <link rel="stylesheet" type="text/css" href="<?php echo $href ?>" />
 <?php
     }
 ?>

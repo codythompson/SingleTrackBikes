@@ -257,8 +257,6 @@ function insertBulletin($title, $text) {
     if (empty($title) || empty($text)) {
         return false;
     }
-    $title = htmlspecialchars($title);
-    $text = htmlspecialchars($text);
 
     $query = "insert into single_track.announcements " .
         "(title, `text`, `date`) " .
@@ -269,6 +267,43 @@ function insertBulletin($title, $text) {
         return false;
     }
     $stmt->bind_param("ss", $title, $text);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function updateBulletin($annId, $title, $text, $resetDate) {
+    global $mysqli;
+
+    $query = "update single_track.announcements " .
+        "set title = ?, " .
+        "text = ? ";
+    if ($resetDate) {
+        $query .= ", date = NOW() ";
+    }
+    $query .= "where announcement_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ssi", $title, $text, $annId);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function deleteBulletin($annId) {
+    global $mysqli;
+
+    $query = "delete from single_track.announcements " .
+        "where announcement_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("i", $annId);
     $stmt->execute();
 
     return $stmt->affected_rows == 1;
