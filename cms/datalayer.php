@@ -147,14 +147,18 @@ function getAnnouncements($limit = 3) {
         "a.text,  " .
         "DATE_FORMAT(a.date, '%c/%e/%Y %l:%i') as date " .
         "from announcements a " .
-        "order by a.date desc " .
-        "limit ?";
+        "order by a.date desc ";
+    if ($limit > 0) {
+        $query .= "limit ?";
+    }
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
         return null;
     }
-    $stmt->bind_param("i", $limit);
+    if ($limit > 0) {
+        $stmt->bind_param("i", $limit);
+    }
     $stmt->execute();
 
     return fetchRows($stmt);
@@ -245,5 +249,28 @@ function getProductInfo($intProductId, $boolGetChildren) {
     }
 
     return $result;
+}
+
+function insertBulletin($title, $text) {
+    global $mysqli;
+
+    if (empty($title) || empty($text)) {
+        return false;
+    }
+    $title = htmlspecialchars($title);
+    $text = htmlspecialchars($text);
+
+    $query = "insert into single_track.announcements " .
+        "(title, `text`, `date`) " .
+        "values (?, ?, NOW())";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ss", $title, $text);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
 }
 ?>

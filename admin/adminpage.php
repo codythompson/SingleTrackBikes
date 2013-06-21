@@ -1,7 +1,7 @@
 <?php
 require_once("auth.php");
 
-function makePage($contentFile) {
+function makePage($contentFile, $scriptSrcs = array()) {
 
     $authed = authed();
     if ($authed === false) {
@@ -17,6 +17,14 @@ function makePage($contentFile) {
 
 <script type="text/javascript" src="/scripts/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="/scripts/bootstrap.js"></script>
+
+<?php
+    foreach($scriptSrcs as $src) {
+?>
+    <script type="text/javascript" src="<?php echo $src ?>"></script>
+<?php
+    }
+?>
 
 </head>
 
