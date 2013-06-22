@@ -18,6 +18,7 @@ function makePage($contentFile, $cssHrefs = array(), $scriptSrcs = array()) {
 
 <script type="text/javascript" src="/scripts/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="/scripts/bootstrap.js"></script>
+<script type="text/javascript" src="/scripts/admin.js"></script>
 <script type="text/javascript" src="/scripts/nicEdit.js"></script>
 
 <?php

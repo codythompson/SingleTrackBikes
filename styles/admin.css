@@ -13,3 +13,22 @@
 .st-content-edit-area hr {
     border: 2px dashed #eee;
 }
+
+/*
+ * Image Modal Styles
+ */
+
+.st-images-modal .img-container {
+    margin-right: 5%;
+    width: 25%;
+}
+
+.st-images-modal .img-container img {
+    border: 4px solid #888;
+}
+
+.st-images-modal .media-object {
+    clear: both;
+
+    margin-bottom: 16px;
+}
