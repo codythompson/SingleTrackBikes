@@ -32,3 +32,11 @@
 
     margin-bottom: 16px;
 }
+
+.st-image-upload {
+    text-align: left;
+}
+
+.st-images-modal-fclose {
+    margin-left: 8px;
+}

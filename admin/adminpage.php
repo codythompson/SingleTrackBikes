@@ -42,17 +42,11 @@ function makePage($contentFile, $cssHrefs = array(), $scriptSrcs = array()) {
 <body>
 
 <div>
-    <ul class="nav nav-pills">
-        <li>
-            <form action="login.php" method="post">
-                <input type="hidden" name="form_type" value="logout" />
-                <input class="btn btn-info" type="submit" value="logout" />
-            </form>
-        </li>
-        <li>
-            <a href="/admin" class="btn btn-info">Admin Home</a>
-        </li>
-    </ul>
+    <form action="login.php" method="post">
+        <input type="hidden" name="form_type" value="logout" />
+        <input class="btn btn-danger" type="submit" value="logout" />
+    </form>
+    <a href="/admin" class="btn btn-info">Admin Home</a>
 </div>
 
 <?php
