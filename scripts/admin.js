@@ -1,6 +1,6 @@
-$(document).ready(function () {
-    $('.st-image-upload').hide();
-});
+//$(document).ready(function () {
+    //$('.st-image-upload').hide();
+//});
 
 function toggleUploadForm(upId) {
     $('#' + upId).slideToggle();
