@@ -327,6 +327,23 @@ function deleteBulletin($annId) {
     return $stmt->affected_rows == 1;
 }
 
+function addContentItem($locationId, $title, $content, $bgUrl, $bgAlt) {
+    global $mysqli;
+
+    $query = "insert into single_track.content_item " .
+        "(content_item_location_id, title, content, bg_image_url, bg_image_alt) " .
+        "values (?, ?, ?, ?, ?)";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("issss", $locationId, $title, $content, $bgUrl, $bgAlt);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
 function editContentItem($itemId, $locationId, $title, $content, $bgUrl, $bgAlt) {
     global $mysqli;
 

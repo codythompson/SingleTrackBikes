@@ -37,6 +37,7 @@ function getErrorMessages($itemId) {
     }
 }
 
+$blankRow = null;
 $sliderFormType = "";
 if (isset($_POST["form_type"])) {
     $sliderFormType = $_POST["form_type"];
@@ -45,20 +46,21 @@ if ($sliderFormType === "content_edit") {
     $itemId = intval($_POST["content_item_id"]);
 
     // get the title
-    $itemTitle;
-    if (!isset($_POST["content_title"])) {
+    $itemTitle = "";
+    if (!isset($_POST["content_title"]) || empty($_POST["content_title"])) {
         addMessage($itemId, "You must provide a title.");
     }
     else {
         $itemTitle = $_POST["content_title"];
         if (strlen($itemTitle) > 255) {
             addMessage($itemId, "The title must be less than 255 characters.");
+            $itemTitle = "";
         }
     }
 
     //get the body content
-    $itemContent;
-    if (!isset($_POST["item_content"])) {
+    $itemContent = "";
+    if (!isset($_POST["item_content"]) || empty($_POST["item_content"])) {
         addMessage($itemId, "You must provide a content body.");
     }
     else {
@@ -66,38 +68,77 @@ if ($sliderFormType === "content_edit") {
     }
 
     //get the bg image url
-    $itemBgUrl;
-    if (!isset($_POST["content_bg_img_url"])) {
+    $itemBgUrl = "";
+    if (!isset($_POST["content_bg_img_url"]) || empty($_POST["content_bg_img_url"])) {
         addMessage($itemId, "You must provide a background image URL.");
+        $itemBgUrl = "";
     }
     else {
         $itemBgUrl = $_POST["content_bg_img_url"];
     }
 
     //get the bg image alt
-    $itemBgAlt;
-    if (!isset($_POST["content_bg_img_alt"])) {
+    $itemBgAlt = "";
+    if (!isset($_POST["content_bg_img_alt"]) || empty($_POST["content_bg_img_alt"])) {
         addMessage($itemId,
             "You must provide a description for the background image.");
     }
     else {
         $itemBgAlt = $_POST["content_bg_img_alt"];
+        if (count($itemBgAlt) > 255) {
+            addMessage($itemId, "The background image description must be " .
+                "less than 255 characters.");
+            $itemBgAlt = "";
+        }
     }
 
     // get the location id
     $itemLoc = intval($_POST["content_item_loc"]);
 
-    if (!errorOccurred($itemId)) {
-        $result = editContentItem($itemId, $itemLoc, $itemTitle, $itemContent,
-            $itemBgUrl, $itemBgAlt);
-        if ($result === true) {
-            $editSuccs[] = "Successfully updated <strong>$itemTitle</strong>";
+    if ($itemId == 0) {
+        if (errorOccurred($itemId)) {
+            $blankRow = array();
+            $blankRow["content_item_id"] = null;
+            $blankRow["content_item_location_id"] = $itemLoc;
+            $blankRow["title"] = $itemTitle;
+            $blankRow["content"] = $itemContent;
+            $blankRow["bg_image_url"] = $itemBgUrl;
+            $blankRow["bg_image_alt"] = $itemBgAlt;
         }
         else {
-            $eMess = "A database error occured while updating the bulletin!" .
-                "<br/>(This error might have occured because you clicked " .
-                "'Save Changes' without actually changing anything.)";
-            addMessage($itemId, $eMess);
+            $result = addContentItem($itemLoc, $itemTitle, $itemContent,
+                $itemBgUrl, $itemBgAlt);
+            if ($result === true) {
+                $editSuccs[] = "Successfully added <strong>$itemTitle</strong>";
+            }
+            else {
+                $blankRow = array();
+                $blankRow["content_item_id"] = null;
+                $blankRow["content_item_location_id"] = $itemLoc;
+                $blankRow["title"] = $itemTitle;
+                $blankRow["content"] = $itemContent;
+                $blankRow["bg_image_url"] = $itemBgUrl;
+                $blankRow["bg_image_alt"] = $itemBgAlt;
+                $eMess = "A database error occured while adding the slider " .
+                    "item!";
+                addMessage($itemId, $eMess);
+            }
+        }
+    }
+    else {
+        if (!errorOccurred($itemId)) {
+            $result = editContentItem($itemId, $itemLoc, $itemTitle, $itemContent,
+                $itemBgUrl, $itemBgAlt);
+            if ($result === true) {
+                $editSuccs[] = "Successfully updated <strong>$itemTitle</strong>";
+            }
+            else {
+                $eMess = "A database error occured while updating the slider " .
+                    "item.<br/>(This error might have occured because you " .
+                    "clicked 'Save Changes' without actually changing " .
+                    "anything.)";
+                addMessage($itemId, $eMess);
+            }
         }
     }
 }
@@ -127,8 +168,14 @@ function displayItemLocDDL($locationInfo, $selectedLoc) {
 }
 
 function displayItem($itemRow, $locationInfo, $messages = null) {
-    $itemId = intval($itemRow["content_item_id"]);
-    $itemLocId = intval($itemRow["content_item_location_id"]);
+    $itemId = 0;
+    if (!empty($itemRow["content_item_id"])) {
+        $itemId = intval($itemRow["content_item_id"]);
+    }
+    $itemLocId = 1;
+    if (!empty($itemRow["content_item_location_id"])) {
+        $itemLocId = intval($itemRow["content_item_location_id"]);
+    }
 
     $editContId = "st-content-edit-" . $itemId;
     $textAreaId = "st-content-edit-area-" . $itemId;
@@ -150,13 +197,16 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
         $bgImgUrl = $itemRow["bg_image_url"];
     }
 
-    $bgImageAlt = "";
+    $bgImgAlt = "";
     if (!empty($itemRow["bg_image_alt"])) {
         $bgImgAlt = $itemRow["bg_image_alt"];
     }
 
 ?>
 <div class="st-content-item">
+<?php
+    if ($itemId != 0) {
+?>
     <button class="btn btn-danger" onmouseup="bboardDeleteToggle(this)" title="Delete Slider Item">
         <i class="icon-trash icon-white"></i>
     </button>
@@ -166,18 +216,27 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
     </button>
 
 <?php
-    if (empty($itemTitle)) {
+        if (empty($itemTitle)) {
 ?>
     <span class="alert alert-info">(Untitled)</span>
+<?php
+        }
+        else {
+?>
+    <span class="alert alert-info"><?php echo $itemTitle; ?></span>
+<?php
+        }
+?>
+
 <?php
     }
     else {
 ?>
-    <span class="alert alert-info"><?php echo $itemTitle; ?></span>
+    <button class="btn btn-success" onmouseup="toggleContainer('<?php echo $editContId ?>')"
+        title="Add Slider Item">+</button>
 <?php
     }
 ?>
-
 <!-- edit panel -->
 <?php
     if (!empty($messages)) {
@@ -281,6 +340,17 @@ foreach($items as $itemRow) {
     displayItem($itemRow, $locOptions,
         getErrorMessages(intval($itemRow["content_item_id"])));
 }
+
+if (empty($blankRow)) {
+    $blankRow = array();
+    $blankRow["content_item_id"] = null;
+    $blankRow["content_item_location_id"] = null;
+    $blankRow["title"] = null;
+    $blankRow["content"] = null;
+    $blankRow["bg_image_url"] = null;
+    $blankRow["bg_image_alt"] = null;
+}
+displayItem($blankRow, $locOptions, getErrorMessages(0));
 ?>
 
 </div>
