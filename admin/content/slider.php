@@ -130,6 +130,7 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
     $itemId = intval($itemRow["content_item_id"]);
     $itemLocId = intval($itemRow["content_item_location_id"]);
 
+    $editContId = "st-content-edit-" . $itemId;
     $textAreaId = "st-content-edit-area-" . $itemId;
     $bgImgTextId = "st-content-edit-bgimg-" . $itemId;
     $contentId = "st-content-edit-text-" . $itemId;
@@ -160,7 +161,7 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
         <i class="icon-trash icon-white"></i>
     </button>
 
-    <button class="btn btn-warning" onmouseup="bboardEditToggle(this)" title="Edit Slider Item">
+    <button class="btn btn-warning" onmouseup="toggleContainer('<?php echo $editContId ?>')" title="Edit Slider Item">
         <i class="icon-pencil icon-white"></i>
     </button>
 
@@ -178,10 +179,10 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
 ?>
 
 <!-- edit panel -->
-    <div class="st-content-edit well">
 <?php
     if (!empty($messages)) {
 ?>
+    <div class="st-content-edit st-content-open well" id="<?php echo $editContId; ?>">
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
 <?php
@@ -189,6 +190,11 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
             echo "<div>$mess</div>";
         }
         echo "</div>";
+    }
+    else {
+?>
+    <div class="st-content-edit well" id="<?php echo $editContId; ?>">
+<?php
     }
 ?>
 
@@ -229,7 +235,9 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
 
             <div class="space-above">
                 <input type="submit" value="Save Changes" class="btn btn-success space-right" />
-                <button type="button" class="btn btn-info">Hide</button>
+                <button type="button" class="btn btn-info" onmouseup="toggleContainer('<?php echo $editContId; ?>')">
+                    Hide
+                </button>
             </div>
 
         </form>
