@@ -504,7 +504,56 @@ function updateProductInfo($pId, $styleId, $name, $descr, $longDescr,
     $stmt->bind_param("isssssssi", $styleId, $name, $descr, $longDescr,
         $offsiteUrl, $offsiteUrlText, $imageUrl, $bgImageUrl, $pId);
     $stmt->execute();
-    var_dump($styleId);
     return $stmt->affected_rows == 1;
+}
+
+function insertNewProduct($parentId, $selStyle, $name, $descr, $longDescr,
+    $offsiteUrl, $offsiteUrlText, $imageUrl, $bgImageUrl) {
+
+    global $mysqli;
+
+    $query = "insert into single_track.product " .
+        "(parent_product_id, product_style_id, name, descr, long_descr, ". 
+        "offsite_url, offsite_url_text, image_url, background_image_url) ". 
+        "values (?, ?, ?, ? ,?, ?, ?, ?, ?) ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("iisssssss", $parentId, $selStyle, $name, $descr,
+        $longDescr, $offsiteUrl, $offsiteUrlText, $imageUrl, $bgImageUrl);
+    $stmt->execute();
+    return $stmt->affected_rows == 1;
+}
+
+function deleteProduct($productId) {
+    global $mysqli;
+
+    //remove references
+    $query = "update single_track.product " .
+        "set parent_product_id = null " .
+        "where parent_product_id = ? ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $orphanCount = $stmt->affected_rows;
+
+    //delete product
+    $query = "delete from single_track.product " .
+        "where product_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+
+    return $orphanCount;
 }
 ?>

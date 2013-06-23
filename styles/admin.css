@@ -18,19 +18,19 @@
     border: 2px dashed #eee;
 }
 
-.st-content-edit .space-above {
+.space-above {
     margin-top: 16px;
 }
 
-.st-content-edit .space-below {
+.space-below {
     margin-bottom: 16px;
 }
 
-.st-content-edit .space-right {
+.space-right {
     margin-right: 16px;
 }
 
-.st-content-edit .space-left {
+.space-left {
     margin-left: 16px;
 }
 
@@ -65,6 +65,7 @@
  * Product styles
  *
  */
+#st-product-add .input-append,
 #st-product-edit .input-append {
     display: block;
 }

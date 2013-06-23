@@ -8,6 +8,7 @@ require_once("images.php");
  * Form Logic
  */
 $errMess = array();
+$addErrMess = array();
 $succMess = array();
 
 $pFormType = "";
@@ -19,7 +20,12 @@ if ($pFormType === "product_edit") {
     $selStyle = intval($_POST["item_style"]);
 
     if (!isset($_POST["item_title"]) || empty($_POST["item_title"])) {
-        $errMess[] = "You must provide a title for the Product/Category.";
+        if ($pId == 0) {
+            $addErrMess[] = "You must provide a title for the Product/Category.";
+        }
+        else {
+            $errMess[] = "You must provide a title for the Product/Category.";
+        }
     }
     else {
         $pName = $_POST["item_title"];
@@ -67,18 +73,46 @@ if ($pFormType === "product_edit") {
         $bgUrl = "";
     }
 
-    if (count($errMess) == 0) {
-        $result = updateProductInfo($pId, $selStyle, $pName, $pDescr, $pLDescr,
-            $pOffsite, $pOffsiteText, $imgUrl, $bgUrl);
-        if ($result === true) {
-            $succMess[] = "Successfully updated <strong>$pName</strong>";
-        }
-        else {
-            $errMess[] = "A database error occurred while updating the " .
-                "product/category. (This error might have occured because you" .
-                " clicked 'Save Changes' without actually changing anything.)";
+    if ($pId == 0) {
+        if (count($addErrMess) == 0) {
+            $parentId = intval($_POST["item_parent_id"]);
+            $result = insertNewProduct($parentId, $selStyle, $pName,
+                $pDescr, $pLDescr, $pOffsite, $pOffsiteText, $imgUrl, $bgUrl);
+            if ($result === true) {
+                $succMess[] = "Successfully created <strong>$pName</strong>";
+            }
+            else {
+                $addErrMess[] = "A database error occurred while updating the " .
+                    "product/category. (This error might have occured because" .
+                    " you clicked 'Save Changes' without actually changing " .
+                    "anything.)";
+            }
         }
     }
+    else {
+        if (count($errMess) == 0) {
+            $result = updateProductInfo($pId, $selStyle, $pName, $pDescr,
+                $pLDescr, $pOffsite, $pOffsiteText, $imgUrl, $bgUrl);
+            if ($result === true) {
+                $succMess[] = "Successfully updated <strong>$pName</strong>";
+            }
+            else {
+                $errMess[] = "A database error occurred while updating the " .
+                    "product/category. (This error might have occured because" .
+                    " you clicked 'Save Changes' without actually changing " .
+                    "anything.)";
+            }
+        }
+    }
+}
+if ($pFormType === "product_delete") {
+    $pId = $_POST["item_id"];
+
+    $oCount = deleteProduct($pId);
+    $succMess[] = "The product/category was successfully deleted. $oCount " .
+        "sub-categories were orphaned but can be added as a sub-category to " .
+        "an existing category via the dropdown at the bottom of the product " .
+        "edit page.";
 }
 
 $pId = 1;
@@ -150,8 +184,9 @@ function displayStyleSelector($styleInfo, $selStyle) {
 <?php
 }
 
-function displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite,
-    $pOffsiteText, $imgUrl, $bgUrl, $selStyle, $styleInfo, $errMessage = null) {
+function displayEditArea($cssId, $pId, $pName, $pDescr, $pLDescr, $pOffsite,
+    $pOffsiteText, $imgUrl, $bgUrl, $selStyle, $styleInfo, $errMessage = null,
+    $isNew = false) {
 
     $extraClass = "";
     if (!empty($errMessage)) {
@@ -159,7 +194,7 @@ function displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite,
     }
 ?>
 <!-- edit area -->
-    <div id="st-product-edit" class="st-content-edit well<?php echo $extraClass; ?>">
+    <div id="<?php echo $cssId; ?>" class="st-content-edit well<?php echo $extraClass; ?>">
 
 <?php
     if (!empty($errMessage)) {
@@ -169,9 +204,21 @@ function displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite,
     }
 ?>
 
-    <form action="product.php" method="POST">
+    <form action="product.php?product_id=<?php echo $pId; ?>" method="POST">
         <input type="hidden" name="form_type" value="product_edit" />
+<?php
+    if ($isNew) {
+?>
+        <input type="hidden" name="item_id" value="0" />
+        <input type="hidden" name="item_parent_id" value="<?php echo $pId; ?>" />
+<?php
+    }
+    else {
+?>
         <input type="hidden" name="item_id" value="<?php echo $pId; ?>" />
+<?php
+    }
+?>
 
         <label for="st-product-title">Product/Category Title</label>
         <input type="text" name="item_title" value="<?php echo $pName; ?>"
@@ -198,22 +245,28 @@ function displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite,
         <input type="text" name="item_offsite_text" value="<?php echo $pOffsiteText; ?>"
             id="st-product-offtext" />
 
+<?php
+    $imgInId = $cssId . "-imgurl";
+?>
         <div class="input-append space-above">
-        <label for="st-product-img">Product/Category Image Url</label>
+        <label for="<?php echo $imgInId; ?>">Product/Category Image Url</label>
         <input type="text" name="item_img_url" value="<?php echo $imgUrl; ?>"
-            id="st-product-img" />
+            id="<?php echo $imgInId; ?>" />
         <button type="button" class="btn btn-success" onmouseup="showImagesModal('<?php
-            echo ST_PRODUCT_IMAGE_PICKER_ID; ?>', 'st-product-img')">
+            echo ST_PRODUCT_IMAGE_PICKER_ID; ?>', '<?php echo $imgInId; ?>')">
             Pick Image Url
         </button>
         </div>
 
+<?php
+    $bgInId = $cssId . "-bgurl";
+?>
         <div class="input-append space-above">
-        <label for="st-product-bgimg">Product/Category Background Image Url</label>
+        <label for="<?php echo $bgInId; ?>">Product/Category Background Image Url</label>
         <input type="text" name="item_bgimg_url" value="<?php echo $bgUrl; ?>"
-            id="st-product-bgimg" />
+            id="<?php echo $bgInId; ?>" />
         <button type="button" class="btn btn-success" onmouseup="showImagesModal('<?php
-            echo ST_PRODUCT_IMAGE_PICKER_ID; ?>', 'st-product-bgimg')">
+            echo ST_PRODUCT_IMAGE_PICKER_ID; ?>', '<?php echo $bgInId; ?>')">
             Pick Image Url
         </button>
         </div>
@@ -224,7 +277,7 @@ function displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite,
 
         <div class="space-above">
             <input type="submit" value="Save Changes" class="btn btn-success" />
-            <button type="button" class="btn btn-info" onmouseup="toggleContainer('st-product-edit')">
+            <button type="button" class="btn btn-info" onmouseup="toggleContainer('<?php echo $cssId; ?>')">
                 Hide
             </button>
         </div>
@@ -232,7 +285,30 @@ function displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite,
     </div>
 </div>
 <?php
-    }
+}
+
+function displayDeleteArea($parentId) {
+?>
+    <div class="st-content-delete well" id="st-content-product-delete">
+        <p class="lead">Are you sure you want to delete this product/category?</p>
+        <form action="product.php" method="POST">
+            <input type="hidden" name="form_type" value="product_delete" />
+            <input type="hidden" name="item_id" value="<?php echo $parentId; ?>" />
+
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <button type="button" class="btn btn-info"
+                onmouseup="toggleContainer('st-content-product-delete')">
+                Hide
+            </button>
+        </form>
+        <div class="alert alert-warning">
+            Any sub-categories of this product/category will not be visible to
+            the public until they are added as sub-categories to an existing
+            product/category
+        </div>
+    </div>
+<?php
+}
 
 //image picker
 $imgsMod = new ImagesModal(ST_PRODUCT_IMAGE_PICKER_ID, "product.php");
@@ -251,7 +327,8 @@ if (!empty($succMess)) {
 
 if (isset($pInfo["parent_product_id"]) && !empty($pInfo["parent_product_id"])) {
 ?>
-    <button type="button" class="btn btn-danger">
+    <button type="button" class="btn btn-danger"
+        onmouseup="toggleContainer('st-content-product-delete')">
         <i class="icon-trash icon-white"></i>
     </button>
 <?php
@@ -275,8 +352,9 @@ else {
     </span>
 
 <?php
-displayEditArea($pId, $pName, $pDescr, $pLDescr, $pOffsite, $pOffsiteText,
+displayEditArea("st-product-edit", $pId, $pName, $pDescr, $pLDescr, $pOffsite, $pOffsiteText,
     $imgUrl, $bgUrl, $selStyle, $styleInfo, $errMess);
+displayDeleteArea($pId);
 ?>
 
 <hr />
@@ -321,7 +399,19 @@ else {
     <div class="alert alert-warning">
         This category currently has no sub categories.
     </div>
+
 <?php
 }
+?>
+    <div class="space-above">
+    <button type="button" class="btn btn-success"
+        onmouseup="toggleContainer('st-product-add')">
+        Add a Sub-Category
+    </button>
+    </div>
+    
+<?php
+displayEditArea("st-product-add", $pId, "", "", "", "", "", "", "", 0,
+    $styleInfo, $addErrMess, true);
 ?>
 </div>
