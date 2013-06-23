@@ -556,4 +556,36 @@ function deleteProduct($productId) {
 
     return $orphanCount;
 }
+
+function getOrphanedProducts() {
+    global $mysqli;
+
+    $query = "select p.product_id, p.name from single_track.product p " .
+        "where p.parent_product_id is null " .
+        "and p.product_id <> 1";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->execute();
+    return fetchRows($stmt);
+}
+
+function setParent($productId, $parentId) {
+    global $mysqli;
+
+    $query = "update single_track.product ".
+        "set parent_product_id = ? " .
+        "where product_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ii", $parentId, $productId);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
 ?>

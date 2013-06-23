@@ -79,14 +79,18 @@ class Product extends HtmlElement {
 
         $baseChildren = array();
 
-        if (!empty($parentProduct["background_image_url"])) {
-            $bgImage = new HtmlElement("img", null,
-                "product-bgimage st-rounded");
-            $bgImage->setAttribute("src",
-                $parentProduct["background_image_url"]);
-            $bgImage->setAttribute("alt", $name);
-            $baseChildren[] = $bgImage;
+        $bgImgUrl;
+        if (empty($parentProduct["background_image_url"])) {
+            $bgImgUrl = "/images/single_track_logo.png";
         }
+        else {
+            $bgImgUrl = $parentProduct["background_image_url"];
+        }
+        $bgImage = new HtmlElement("img", null,
+            "product-bgimage st-rounded");
+        $bgImage->setAttribute("src", $bgImgUrl);
+        $bgImage->setAttribute("alt", $name);
+        $baseChildren[] = $bgImage;
 
         $innerContEles = array();
 
@@ -266,6 +270,9 @@ class Product extends HtmlElement {
             if (!empty($parentProduct["background_image_url"])) {
                 $bgImageUrl = $parentProduct["background_image_url"];
             }
+            else {
+                $bgImageUrl = "/images/single_track_logo.png";
+            }
             $offsiteUrl = null;
             if (!empty($parentProduct["offsite_url"]))
                 $offsiteUrl = $parentProduct["offsite_url"];
@@ -298,6 +305,9 @@ class Product extends HtmlElement {
                 $bgImageUrl = null;
                 if (!empty($childInfo["background_image_url"])) {
                     $bgImageUrl = $childInfo["background_image_url"];
+                }
+                else {
+                    $bgImageUrl = "/images/single_track_logo.png";
                 }
                 $offsiteUrl = null;
                 if (!empty($childInfo["offsite_url"]))
@@ -395,7 +405,7 @@ class Product extends HtmlElement {
             $imgSrc = $imageUrl;
         }
         $imgEle = new HtmlElement("img");
-        $imgEle->setAttribute("src", $imageUrl);
+        $imgEle->setAttribute("src", $imgSrc);
         if (!empty($title)) {
             $imgEle->setAttribute("alt", $title);
         }
@@ -493,8 +503,9 @@ class Product extends HtmlElement {
                 if (!empty($childInfo["descr"]))
                     $descr = $childInfo["descr"];
                 $imageUrl = null;
-                if (!empty($childInfo["image_url"]))
+                if (!empty($childInfo["image_url"])) {
                     $imageUrl = $childInfo["image_url"];
+                }
                 $offsiteUrl = null;
                 if (!empty($childInfo["offsite_url"]))
                     $offsiteUrl = $childInfo["offsite_url"];

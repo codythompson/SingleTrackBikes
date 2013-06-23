@@ -105,14 +105,31 @@ if ($pFormType === "product_edit") {
         }
     }
 }
-if ($pFormType === "product_delete") {
+else if ($pFormType === "product_delete") {
     $pId = $_POST["item_id"];
 
     $oCount = deleteProduct($pId);
-    $succMess[] = "The product/category was successfully deleted. $oCount " .
-        "sub-categories were orphaned but can be added as a sub-category to " .
-        "an existing category via the dropdown at the bottom of the product " .
-        "edit page.";
+    $succMess[] = "The product/category was successfully deleted. <strong>" .
+        "$oCount</strong> sub-categories were orphaned but can be added as a " .
+        "sub-category to an existing category via the dropdown at the bottom " .
+        "of this page.";
+}
+else if ($pFormType == "product_set_parent") {
+    $pId = intval($_POST["product_id"]);
+    $parentId = intval($_POST["parent_id"]);
+    if (isset($_POST["add_parent"])) {
+        $result = setParent($pId, $parentId);
+        if ($result === true) {
+            $succMess[] = "Successfully set parent";
+        }
+    }
+    else if (isset($_POST["delete_orphan"])) {
+        $oCount = deleteProduct($pId);
+        $succMess[] = "The product/category was successfully deleted. <strong>" .
+            "$oCount</strong> sub-categories were orphaned but can be added as a " .
+            "sub-category to an existing category via the dropdown at the bottom " .
+            "of this page.";
+    }
 }
 
 $pId = 1;
@@ -156,6 +173,7 @@ if (!empty($pInfo["background_image_url"])) {
 }
 
 $styleInfo = getProductStyleInfo();
+$orphanInfo = getOrphanedProducts();
 
 /*
  * Html gen code
@@ -287,13 +305,13 @@ function displayEditArea($cssId, $pId, $pName, $pDescr, $pLDescr, $pOffsite,
 <?php
 }
 
-function displayDeleteArea($parentId) {
+function displayDeleteArea($pId) {
 ?>
     <div class="st-content-delete well" id="st-content-product-delete">
         <p class="lead">Are you sure you want to delete this product/category?</p>
         <form action="product.php" method="POST">
             <input type="hidden" name="form_type" value="product_delete" />
-            <input type="hidden" name="item_id" value="<?php echo $parentId; ?>" />
+            <input type="hidden" name="item_id" value="<?php echo $pId; ?>" />
 
             <input type="submit" value="Delete" class="btn btn-danger" />
             <button type="button" class="btn btn-info"
@@ -310,12 +328,55 @@ function displayDeleteArea($parentId) {
 <?php
 }
 
+function displayOrphanDDL($pId, $pName, $orphanRows) {
+?>
+<p class="lead">Orphaned Products/Categories</p>
+<p>
+    The following drop down list contains all of the product/categories with no
+    parent product/category. The orphaned products/categories will not be
+    visible to the public until they are added as a sub category to an existing
+    product/category.
+</p>
+<?php
+    if (empty($orphanRows)) {
+?>
+    <div class="alert alet-warning">
+        There a currently not any orphaned products/categores
+    </div>
+<?php
+    }
+    else {
+?>
+    <form action="product.php?product_id=<?php echo $pId; ?>" method="POST">
+        <input type="hidden" name="form_type" value="product_set_parent" />
+        <input type="hidden" name="parent_id" value="<?php echo $pId; ?>" />
+        <select name="product_id">
+<?php
+        foreach($orphanRows as $row) {
+            $val= $row["product_id"];
+            $name = $row["name"];
+            echo "<option value=\"$val\">$name</option>";
+        }
+?>
+        </select>
+
+        <div class="space-above">
+        <input type="submit" name="add_parent"
+            value="Set '<?php echo $pName; ?>' as Parent" class="btn btn-success" />
+        <input type="submit" name="delete_orphan" value="Delete"
+            class="btn btn-danger" />
+        </div>
+    <form>
+<?php
+    }
+}
+
 //image picker
 $imgsMod = new ImagesModal(ST_PRODUCT_IMAGE_PICKER_ID, "product.php");
 $imgsMod->writeElement();
 
 ?>
-<h1>Edit Product Pages</h1>
+<h1>Edit Product/Category Page: <strong>'<?php echo $pName; ?>'</strong></h1>
 
 <div class="st-product">
 <?php
@@ -347,10 +408,6 @@ else {
         <i class="icon-pencil icon-white"></i>
     </button>
 
-    <span class="alert alert-info">
-        Category Name: <strong><?php echo $pName; ?></strong>
-    </span>
-
 <?php
 displayEditArea("st-product-edit", $pId, $pName, $pDescr, $pLDescr, $pOffsite, $pOffsiteText,
     $imgUrl, $bgUrl, $selStyle, $styleInfo, $errMess);
@@ -359,7 +416,7 @@ displayDeleteArea($pId);
 
 <hr />
 <div class="st-product-parent">
-    <span class="lead">Parent Category:</div>
+    <span class="lead">Parent Product/Category:</span>
 <?php
 if (isset($pInfo["parent_product_id"]) && !empty($pInfo["parent_product_id"])) {
 ?>
@@ -381,7 +438,7 @@ else {
 
 <hr />
 <div class="st-product-subs">
-    <span class="lead">Sub Categories:</span>
+    <span class="lead">Sub Products/Categories:</span>
 <?php
 if (isset($pInfo["child_product"]) && !empty($pInfo["child_product"])) {
     $subCats = $pInfo["child_product"];
@@ -413,5 +470,11 @@ else {
 <?php
 displayEditArea("st-product-add", $pId, "", "", "", "", "", "", "", 0,
     $styleInfo, $addErrMess, true);
+
+?>
+<hr />
+<?php
+
+displayOrphanDDL($pId, $pName, $orphanInfo);
 ?>
 </div>
