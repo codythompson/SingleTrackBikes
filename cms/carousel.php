@@ -8,16 +8,19 @@ class Carousel extends HtmlElement {
         $baseChildrenArray = array();
 
         // build the carousel page indicators
-        $indChildren = array();
-        for ($i = 0; $i < count($contentItems); $i++) {
-            $indChildren[$i] = new HtmlElement("li");
-            $indChildren[$i]->setAttribute("data-target", "#$cssId");
-            $indChildren[$i]->setAttribute("data-slide-to", "$i");
+        if (count($contentItems) > 1) {
+            $indChildren = array();
+            for ($i = 0; $i < count($contentItems); $i++) {
+                $indChildren[$i] = new HtmlElement("li");
+                $indChildren[$i]->setAttribute("data-target", "#$cssId");
+                $indChildren[$i]->setAttribute("data-slide-to", "$i");
+            }
+            $indChildren[0]->cssClass = "active";
+            $indicators = new HtmlElement("ol", null,
+                "carousel-indicators st-rounded hidden-750", null,
+                $indChildren);
+            $baseChildrenArray[] = $indicators;
         }
-        $indChildren[0]->cssClass = "active";
-        $indicators = new HtmlElement("ol", null,
-            "carousel-indicators st-rounded", null, $indChildren);
-        $baseChildrenArray[] = $indicators;
 
         //build the content items
         $itemArray = array();
@@ -45,20 +48,24 @@ class Carousel extends HtmlElement {
         $baseChildrenArray[] = new HtmlElement("div", null,
             "carousel-inner st-rounded", null, $itemArray);
 
-        $leftArrow = new HtmlElement("a", null, "carousel-control-left left");
-        $leftArrow->setAttribute("href", "#$cssId");
-        $leftArrow->setAttribute("data-slide", "prev");
-        $leftArrow->text =
-            "<img src=\"/images/st-arrow-left.png\" alt=\"scroll left\"/>";
-
-        $rightArrow = new HtmlElement("a", null, "carousel-control-right right");
-        $rightArrow->setAttribute("href", "#$cssId");
-        $rightArrow->setAttribute("data-slide", "next");
-        $rightArrow->text =
-            "<img src=\"/images/st-arrow-right.png\" alt=\"scroll right\"/>";
-
-        $baseChildrenArray[] = $leftArrow;
-        $baseChildrenArray[] = $rightArrow;
+        if (count($contentItems) > 1) {
+            $leftArrow = new HtmlElement("a", null,
+                "carousel-control-left left hidden-750");
+            $leftArrow->setAttribute("href", "#$cssId");
+            $leftArrow->setAttribute("data-slide", "prev");
+            $leftArrow->text =
+                "<img src=\"/images/st-arrow-left.png\" alt=\"scroll left\"/>";
+    
+            $rightArrow = new HtmlElement("a", null,
+                "carousel-control-right right hidden-750");
+            $rightArrow->setAttribute("href", "#$cssId");
+            $rightArrow->setAttribute("data-slide", "next");
+            $rightArrow->text =
+                "<img src=\"/images/st-arrow-right.png\" alt=\"scroll right\"/>";
+    
+            $baseChildrenArray[] = $leftArrow;
+            $baseChildrenArray[] = $rightArrow;
+        }
 
         $this->childElements = $baseChildrenArray;
     }

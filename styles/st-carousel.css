@@ -19,9 +19,19 @@
     left: 5%;
 }
 
+.st-carousel-caption-topright {
+    top: 5%;
+    right: 5%;
+}
+
 .st-carousel-caption-bottomright {
     bottom: 5%;
     right: 5%;
+}
+
+.st-carousel-caption-bottomleft {
+    bottom: 5%;
+    left: 5%;
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
