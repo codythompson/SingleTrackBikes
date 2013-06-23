@@ -1,7 +1,7 @@
 <?php
 require_once("error.php");
 
-define("ST_PRODUCT_ID_ROOT", 2);
+define("ST_PRODUCT_ID_ROOT", 1);
 define("ST_PRODUCT_ID_BIKES", 2);
 
 $dbconn_loc = "dbconn.php";
@@ -234,7 +234,12 @@ function getProductInfo($intProductId, $boolGetChildren) {
 
     $pid = intval($intProductId);
 
-    $queryParent = "select * from single_track.product p " .
+    $queryParent = "select " .
+        "p.*, " .
+        "pp.name as parent_name ". 
+        "from single_track.product p " .
+        "left join single_track.product pp " .
+        "on p.parent_product_id = pp.product_id " .
         "where p.product_id = ?";
     $stmt = $mysqli->prepare($queryParent);
     if (!$stmt) {

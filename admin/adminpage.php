@@ -48,6 +48,7 @@ function makePage($contentFile, $cssHrefs = array(), $scriptSrcs = array()) {
     </form>
     <a href="/admin" class="btn btn-info">Admin Home</a>
 </div>
+<hr />
 
 <?php
     require($contentFile);

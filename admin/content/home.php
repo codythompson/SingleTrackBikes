@@ -3,4 +3,5 @@
 <ul class="nav nav-pills nav-stacked">
 <li><a href="bboard.php">Edit the Bulletin Board</a></li>
 <li><a href="slider.php">Edit the Homepage 'Slider'</a></li>
+<li><a href="product.php">Edit the Product Pages</a></li>
 </ul>
