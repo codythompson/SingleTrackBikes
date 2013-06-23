@@ -13,17 +13,11 @@ $editSuccs = array();
 
 function addMessage($itemId, $message, $isError = true) {
     global $editErrors;
-    global $editSuccs;
 
-    if ($isError) {
-        if (!array_key_exists($itemId, $editErrors)) {
-            $editErrors[$itemId] = array();
-        }
-        $editErrors[$itemId][] = $message;
+    if (empty($editErrors) || !array_key_exists($itemId, $editErrors)) {
+        $editErrors[$itemId] = array();
     }
-    else {
-        $editSuccs[] = $message;
-    }
+    $editErrors[$itemId][] = $message;
 }
 
 function errorOccurred($itemId) {
@@ -52,7 +46,7 @@ if ($sliderFormType === "content_edit") {
 
     // get the title
     $itemTitle;
-    if (isset($_POST["content_title"])) {
+    if (!isset($_POST["content_title"])) {
         addMessage($itemId, "You must provide a title.");
     }
     else {
@@ -64,7 +58,7 @@ if ($sliderFormType === "content_edit") {
 
     //get the body content
     $itemContent;
-    if (isset($_POST["item_content"])) {
+    if (!isset($_POST["item_content"])) {
         addMessage($itemId, "You must provide a content body.");
     }
     else {
@@ -73,7 +67,7 @@ if ($sliderFormType === "content_edit") {
 
     //get the bg image url
     $itemBgUrl;
-    if (isset($_POST["content_bg_img_url"])) {
+    if (!isset($_POST["content_bg_img_url"])) {
         addMessage($itemId, "You must provide a background image URL.");
     }
     else {
@@ -82,7 +76,7 @@ if ($sliderFormType === "content_edit") {
 
     //get the bg image alt
     $itemBgAlt;
-    if (isset($_POST["content_bg_img_alt"])) {
+    if (!isset($_POST["content_bg_img_alt"])) {
         addMessage($itemId,
             "You must provide a description for the background image.");
     }
@@ -97,8 +91,7 @@ if ($sliderFormType === "content_edit") {
         $result = editContentItem($itemId, $itemLoc, $itemTitle, $itemContent,
             $itemBgUrl, $itemBgAlt);
         if ($result === true) {
-           addMessage($itemId, "Successfully updated <strong>$itemTitle" .
-                "</strong>", false);
+            $editSuccs[] = "Successfully updated <strong>$itemTitle</strong>";
         }
         else {
             $eMess = "A database error occured while updating the bulletin!" .
@@ -187,7 +180,6 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
 <!-- edit panel -->
     <div class="st-content-edit well">
 <?php
-/*
     if (!empty($messages)) {
 ?>
         <div class="alert alert-danger">
@@ -198,7 +190,6 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
         }
         echo "</div>";
     }
- */
 ?>
 
         <form action="slider.php" method="post"
@@ -258,7 +249,7 @@ $imgPicker->writeElement();
 <h1>Home Page 'Slider' Edit Page'</h1>
 
 <?php
-if (!empty($editSuccs)) {
+if (count($editSuccs) > 0) {
 ?>
 <div class="alert alert-success">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
