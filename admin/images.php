@@ -25,6 +25,7 @@ function getImageUrls() {
             $url = array();
             $url["filename"] = $img;
             $url["path"] = ST_IMAGE_UPLOADS_URL_PATH . $img;
+            $url["server_path"] = ST_IMAGE_UPLOADS_PATH . $img;
             $urls[] = $url;
         }
     }
@@ -137,32 +138,100 @@ class UploadForm extends HtmlElement {
 
 class ImagesModal extends HtmlElement {
 
-    private function getImageItem($imgUrlInfo) {
+    public $errorMessage;
+    public $successMessage;
+
+    private function handlePost() {
+        $formType = null;
+        if (isset($_POST["form_type"])) {
+            $formType= $_POST["form_type"];
+        }
+        if ($formType === "image_delete") {
+            $delPath = $_POST["image_path"];
+            if (file_exists($delPath)) {
+                $delSucc = unlink($delPath);
+                if ($delSucc === true) {
+                    $this->successMessage = "Successfully deleted file " .
+                        "<strong>$delPath</strong>";
+                }
+                else {
+                    $this->errorMessage = "Unable to delete file <strong>" .
+                        "$delPath</strong>";
+                }
+            }
+            else {
+                $this->errorMessage = "Can't delete file <strong>$delPath" .
+                    "</strong> because it doesn't exists.";
+            }
+        }
+    }
+
+    private function getImageItem($cssId, $imgUrlInfo, $actionUrl) {
         $baseEles = array();
+
+        $path = $imgUrlInfo["path"];
 
         //image
         $img = new HtmlElement("img", null, "media-object");
-        $img->setAttribute("src", $imgUrlInfo["path"]);
+        $img->setAttribute("src", $path);
         $img->setAttribute("alt", "uploaded image");
         $imgLink = new HtmlElement("a", null, "pull-left img-container", null,
             array($img));
-        $imgLink->setAttribute("href", $imgUrlInfo["path"]);
+        $imgLink->setAttribute("href", $path);
         $imgLink->setAttribute("target", "_blank");
         $baseEles[] = $imgLink;
 
         //body
         $bodyEles = array();
-        $bodyEles[] = new HtmlElement("div", null, "media-heading",
-            $imgUrlInfo["filename"]);
+        $bodyEles[] = new HtmlElement("div", null, "media-heading", $path);
+
         $useBut = new HtmlElement("button", null, "btn btn-success", "Use");
         $useBut->setAttribute("type", "button");
-        //$useBut->setAttribute("onmouseup", "");
+        $useBut->setAttribute("onmouseup", "selectImage('$cssId', '$path')");
         $bodyEles[] = $useBut;
         $bodyEles[] = new HtmlElement("br");
+
         $delBut = new HtmlElement("button", null, "btn btn-danger", "Delete");
         $delBut->setAttribute("type", "button");
-        //$delBut->setAttribute("onmouseup", "");
+        $delBut->setAttribute("onmouseup", "toggleDelDialog(this)");
         $bodyEles[] = $delBut;
+
+        //delete form
+        $formEles = array();
+        //text
+        $delText = new HtmlElement("p", null, null,
+            "Are you sure you want to delete this image?");
+        $formEles[] = $delText;
+        //form type
+        $fType = new HtmlElement("input");
+        $fType->setAttribute("type", "hidden");
+        $fType->setAttribute("name", "form_type");
+        $fType->setAttribute("value", "image_delete");
+        $formEles[] = $fType;
+        //image info
+        $iInfo = new HtmlElement("input");
+        $iInfo->setAttribute("type", "hidden");
+        $iInfo->setAttribute("name", "image_path");
+        $iInfo->setAttribute("value", $imgUrlInfo["server_path"]);
+        $formEles[] = $iInfo;
+        //permanently delete button
+        $fDelBut = new HtmlElement("input", null, "btn btn-danger");
+        $fDelBut->setAttribute("type", "Submit");
+        $fDelBut->setAttribute("value", "Delete");
+        $formEles[] = $fDelBut;
+        //cancel button
+        $cancelBut = new HtmlElement("button", null, "btn btn-info", "Cancel");
+        $cancelBut->setAttribute("type", "button");
+        $cancelBut->setAttribute("onmouseup", "cancelDelDialog(this)");
+        $formEles[] = $cancelBut;
+        //actual form
+        $delForm = new HtmlElement("form", null, null, null, $formEles);
+        $delForm->setAttribute("action", $actionUrl);
+        $delForm->setAttribute("method", "POST");
+        //container
+        $bodyEles[] = new HtmlElement("div", null, "st-image-delete well", null,
+            array($delForm));
+
         $baseEles[] = new HtmlElement("div", null, "media-body", null,
             $bodyEles);
 
@@ -170,6 +239,8 @@ class ImagesModal extends HtmlElement {
     }
 
     public function __construct($cssId, $actionUrl) {
+        $this->handlePost();
+
         $baseEles = array();
     
         //header
@@ -179,6 +250,31 @@ class ImagesModal extends HtmlElement {
         $close->setAttribute("onmouseup", "toggleImagesModal('$cssId')");
         $headerEles[] = $close;
         $headerEles[] = new HtmlElement("h3", null, null, "Image Url Selector");
+
+        if (!empty($this->errorMessage) || !empty($this->successMessage)) {
+            $scriptText =
+                "$(document).ready( function () { " .
+                "toggleImagesModal('$cssId');" .
+                "}); ";
+            $scriptEle = new HtmlElement("script", null, null, $scriptText);
+            $scriptEle->setAttribute("type", "text/javascript");
+            $baseEles[] = $scriptEle;
+
+            if (!empty($this->errorMessage)) {
+                $eClose = new HtmlElement("button", null, "close", "&times;");
+                $eClose->setAttribute("data-dismiss", "alert");
+                $headerEles[] = new HtmlElement("div", null,
+                    "alert alert-danger", $this->errorMessage, array($eClose));
+            }
+            if (!empty($this->successMessage)) {
+                $eClose = new HtmlElement("button", null, "close", "&times;");
+                $eClose->setAttribute("data-dismiss", "alert");
+                $headerEles[] = new HtmlElement("div", null,
+                    "alert alert-success", $this->successMessage,
+                    array($eClose));
+            }
+        }
+
         $baseEles[] = new HtmlElement("div", null, "modal-header", null,
             $headerEles);
 
@@ -193,7 +289,8 @@ class ImagesModal extends HtmlElement {
         }
         else {
             foreach($imageUrls as $urlInfo) {
-                $bodyEles[] = $this->getImageItem($urlInfo);
+                $bodyEles[] = $this->getImageItem($cssId, $urlInfo, $actionUrl);
+                $bodyEles[] = new HtmlElement("hr");
             }
         }
         $baseEles[] = new HtmlElement("div", null, "modal-body", null,

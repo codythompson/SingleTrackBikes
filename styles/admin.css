@@ -14,6 +14,10 @@
     border: 2px dashed #eee;
 }
 
+.st-content-edit .space-above {
+    margin-top: 16px;
+}
+
 /*
  * Image Modal Styles
  */

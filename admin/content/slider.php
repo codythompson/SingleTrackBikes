@@ -1,10 +1,18 @@
 <?php
+define("ST_SLIDER_IMAGE_PIKER_ID", "slider-img-picker");
+
 require_once("../cms/datalayer.php");
+
+require_once("images.php");
+
+$imgPicker = new ImagesModal(ST_SLIDER_IMAGE_PIKER_ID, "slider.php");
+$imgPicker->writeElement();
 
 function displayItem($itemRow) {
     $itemId = $itemRow["content_item_id"];
 
     $textAreaId = "st-content-edit-area-" . $itemId;
+    $bgImgTextId = "st-content-edit-bgimg-" . $itemId;
 
     $itemTitle = "";
     if (!empty($itemRow["title"])) {
@@ -14,6 +22,11 @@ function displayItem($itemRow) {
     $itemText = "";
     if (!empty($itemRow["content"])) {
         $itemText = $itemRow["content"];
+    }
+
+    $bgImgUrl = "";
+    if (!empty($itemRow["bg_image_url"])) {
+        $bgImgUrl = $itemRow["bg_image_url"];
     }
 ?>
 <div class="st-content-item">
@@ -47,11 +60,21 @@ function displayItem($itemRow) {
             <label for="content_title">Slider Item Title:</label>
             <input type="text" name="content_title" value="<?php echo $itemTitle;?>" />
 
-            <label for="content_text">Slider Item Body</label>
+            <label for="<?php echo $textAreaId; ?>">Slider Item Body</label>
             <div id="<?php echo $textAreaId; ?>" class="st-content-edit-area"><?php echo $itemText; ?></div>
             <script type="text/javascript">
                 (new nicEditor({fullPanel: true})).panelInstance('<?php echo $textAreaId ?>');
             </script>
+
+            <div class="input-append space-above">
+            <label for="<?php echo $bgImgTextId; ?>">Slider Item Background Image Url</label>
+            <input type="text" name="content_bg_img_url" id="<?php echo $bgImgTextId; ?>"
+                value="<?php echo $bgImgUrl; ?>" />
+            <button type="button" class="btn btn-success"
+                onmouseup="showImagesModal('<?php echo ST_SLIDER_IMAGE_PIKER_ID; ?>', '<?php echo $bgImgTextId; ?>')">
+                Pick Background Image Url
+            </button>
+            </div>
         </form>
     </div>
 </div>
