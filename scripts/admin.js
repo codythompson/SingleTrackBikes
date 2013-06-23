@@ -3,6 +3,11 @@ $(document).ready(function () {
     $('.st-image-delete').hide();
 });
 
+function postEditorContent(textAreaId, hiddenFieldId) {
+    var html = nicEditors.findEditor(textAreaId).getContent();
+    $('#' + hiddenFieldId).val(html);
+}
+
 //image modal stuff
 var ST_image_url_input_id;
 

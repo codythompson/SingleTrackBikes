@@ -18,6 +18,18 @@
     margin-top: 16px;
 }
 
+.st-content-edit .space-below {
+    margin-bottom: 16px;
+}
+
+.st-content-edit .space-right {
+    margin-right: 16px;
+}
+
+.st-content-edit .space-left {
+    margin-left: 16px;
+}
+
 /*
  * Image Modal Styles
  */

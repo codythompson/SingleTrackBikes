@@ -139,6 +139,19 @@ function getContentItems($limit = 0) {
     return fetchRows($stmt);
 }
 
+function getContentItemLocations() {
+    global $mysqli;
+
+    $query = "select * from single_track.content_item_location";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->execute();
+    return fetchRows($stmt);
+}
+
 function getAnnouncements($limit = 3) {
     global $mysqli;
 
@@ -252,6 +265,10 @@ function getProductInfo($intProductId, $boolGetChildren) {
     return $result;
 }
 
+/*
+ * Setters
+ */
+
 function insertBulletin($title, $text) {
     global $mysqli;
 
@@ -305,6 +322,28 @@ function deleteBulletin($annId) {
         return false;
     }
     $stmt->bind_param("i", $annId);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function editContentItem($itemId, $locationId, $title, $content, $bgUrl, $bgAlt) {
+    global $mysqli;
+
+    $query = "update single_track.content_item " .
+        "set content_item_location_id = ? ," .
+        "title = ?, " .
+        "content = ?, " .
+        "bg_image_url = ?, " .
+        "bg_image_alt = ? " .
+        "where content_item_id = ? ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("issssi", $locationId, $title, $content, $bgUrl, $bgAlt,
+        $itemId);
     $stmt->execute();
 
     return $stmt->affected_rows == 1;
