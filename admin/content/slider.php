@@ -150,6 +150,10 @@ else if ($sliderFormType === "move_down") {
     $itemId = intval($_POST["content_item_id"]);
     reorderContentItemDown($itemId);
 }
+else if ($sliderFormType === "content_item_del") {
+    $itemId = intval($_POST["content_item_id"]);
+    deleteContentItem($itemId);
+}
 
 /*
  * Edit form builder funcs
@@ -189,6 +193,7 @@ function displayItem($itemRow, $locationInfo, $messages = null, $isTop = false,
     }
 
     $editContId = "st-content-edit-" . $itemId;
+    $delContId = "st-content-delete-" . $itemId;
     $textAreaId = "st-content-edit-area-" . $itemId;
     $bgImgTextId = "st-content-edit-bgimg-" . $itemId;
     $contentId = "st-content-edit-text-" . $itemId;
@@ -218,7 +223,8 @@ function displayItem($itemRow, $locationInfo, $messages = null, $isTop = false,
 <?php
     if ($itemId != 0) {
 ?>
-    <button class="btn btn-danger" onmouseup="bboardDeleteToggle(this)" title="Delete Slider Item">
+    <button class="btn btn-danger" onmouseup="toggleContainer('<?php echo $delContId; ?>')"
+        title="Delete Slider Item">
         <i class="icon-trash icon-white"></i>
     </button>
 
@@ -348,6 +354,20 @@ function displayItem($itemRow, $locationInfo, $messages = null, $isTop = false,
                 </button>
             </div>
 
+        </form>
+    </div>
+    <!-- end edit panel -->
+    <!-- del panel -->
+    <div id="<?php echo $delContId; ?>" class="st-content-delete well">
+        <form action="slider.php" method="POST">
+            <input type="hidden" name="form_type" value="content_item_del" />
+            <input type="hidden" name="content_item_id" value="<?php echo $itemId; ?>" />
+            <p>Are you sure you want to delete this slider item?</p>
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <button type="button" class="btn btn-info"
+                onmouseup="toggleContainer('<?php echo $delContId; ?>')">
+                Hide
+            </button>
         </form>
     </div>
 </div>

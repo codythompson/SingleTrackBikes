@@ -366,6 +366,21 @@ function editContentItem($itemId, $locationId, $title, $content, $bgUrl, $bgAlt)
     return $stmt->affected_rows == 1;
 }
 
+function deleteContentItem($itemId) {
+    global $mysqli;
+
+    $query = "delete from single_track.content_item " .
+        "where content_item_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("i", $itemId);
+    $stmt->execute();
+    return $stmt->affected_rows == 1;
+}
+
 function reorderContentItemUp($upItemId) {
     global $mysqli;
 
@@ -403,6 +418,8 @@ function reorderContentItemUp($upItemId) {
         $stmt->execute();
         $i++;
     }
+
+    return $stmt->affected_rows > 0;
 }
 
 function reorderContentItemDown($downItemId) {
@@ -442,5 +459,7 @@ function reorderContentItemDown($downItemId) {
         $stmt->execute();
         $i++;
     }
+
+    return $stmt->affected_rows > 0;
 }
 ?>
