@@ -2,6 +2,10 @@
     margin-bottom: 16px;
 }
 
+.st-content-up {
+    display: inline;
+}
+
 .st-content-edit-area {
     width: 500px;
     height: 300px;

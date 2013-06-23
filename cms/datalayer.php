@@ -365,4 +365,82 @@ function editContentItem($itemId, $locationId, $title, $content, $bgUrl, $bgAlt)
 
     return $stmt->affected_rows == 1;
 }
+
+function reorderContentItemUp($upItemId) {
+    global $mysqli;
+
+    $items = getContentItems();
+    
+    $foundItem = false;
+    for($i = 1; $i < count($items) && !$foundItem; $i++) {
+        $item = $items[$i];
+
+        if (intval($item["content_item_id"]) == $upItemId) {
+            $foundItem = true;
+            $tmp = $items[$i - 1];
+            $items[$i - 1] = $item;
+            $items[$i] = $tmp;
+        }
+    }
+    if (!$foundItem) {
+        return false;
+    }
+
+    $query = "update single_track.content_item " .
+        "set order_num = ? " .
+        "where content_item_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $curId = 0;
+    $i = 0;
+    $stmt->bind_param("ii", $i, $curId);
+    while ($i < count($items)) {
+        $item = $items[$i];
+        $curId = $item["content_item_id"];
+        $stmt->execute();
+        $i++;
+    }
+}
+
+function reorderContentItemDown($downItemId) {
+    global $mysqli;
+
+    $items = getContentItems();
+    
+    $foundItem = false;
+    for($i = 0; $i < count($items) - 1 && !$foundItem; $i++) {
+        $item = $items[$i];
+
+        if (intval($item["content_item_id"]) == $downItemId) {
+            $foundItem = true;
+            $tmp = $items[$i + 1];
+            $items[$i + 1] = $item;
+            $items[$i] = $tmp;
+        }
+    }
+    if (!$foundItem) {
+        return false;
+    }
+
+    $query = "update single_track.content_item " .
+        "set order_num = ? " .
+        "where content_item_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $curId = 0;
+    $i = 0;
+    $stmt->bind_param("ii", $i, $curId);
+    while ($i < count($items)) {
+        $item = $items[$i];
+        $curId = $item["content_item_id"];
+        $stmt->execute();
+        $i++;
+    }
+}
 ?>

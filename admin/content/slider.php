@@ -142,10 +142,19 @@ if ($sliderFormType === "content_edit") {
         }
     }
 }
+else if ($sliderFormType === "move_up") {
+    $itemId = intval($_POST["content_item_id"]);
+    reorderContentItemUp($itemId);
+}
+else if ($sliderFormType === "move_down") {
+    $itemId = intval($_POST["content_item_id"]);
+    reorderContentItemDown($itemId);
+}
 
 /*
  * Edit form builder funcs
  */
+
 function displayItemLocDDL($locationInfo, $selectedLoc) {
 ?>
 <div class="space-above">
@@ -167,7 +176,9 @@ function displayItemLocDDL($locationInfo, $selectedLoc) {
 <?php
 }
 
-function displayItem($itemRow, $locationInfo, $messages = null) {
+function displayItem($itemRow, $locationInfo, $messages = null, $isTop = false,
+    $isBottom = false) {
+
     $itemId = 0;
     if (!empty($itemRow["content_item_id"])) {
         $itemId = intval($itemRow["content_item_id"]);
@@ -216,6 +227,44 @@ function displayItem($itemRow, $locationInfo, $messages = null) {
     </button>
 
 <?php
+        if ($isTop) {
+?>
+        <button type="button" class="btn disabled" disabled="disabled">
+            <i class="icon-arrow-up icon-white"></i>
+        </button>
+<?php
+        }
+        else {
+?>
+    <form class="st-content-up" action="slider.php" method="POST">
+        <input type="hidden" name="form_type" value="move_up" />
+        <input type="hidden" name="content_item_id" value="<?php echo $itemId; ?>" />
+        <button type="submit" class="btn btn-info" title="move item up one place">
+            <i class="icon-arrow-up icon-white"></i>
+        </button>
+    </form>
+<?php
+        }
+
+        if ($isBottom) {
+?>
+        <button type="button" class="btn disabled" disabled="disabled">
+            <i class="icon-arrow-down icon-white"></i>
+        </button>
+<?php
+        }
+        else {
+?>
+    <form class="st-content-up" action="slider.php" method="POST">
+        <input type="hidden" name="form_type" value="move_down" />
+        <input type="hidden" name="content_item_id" value="<?php echo $itemId; ?>" />
+        <button type="submit" class="btn btn-info" title="move item down one place">
+            <i class="icon-arrow-down icon-white"></i>
+        </button>
+    </form>
+<?php
+        }
+
         if (empty($itemTitle)) {
 ?>
     <span class="alert alert-info">(Untitled)</span>
@@ -336,9 +385,13 @@ if (count($editSuccs) > 0) {
 /*
  * display each item
  */
-foreach($items as $itemRow) {
+//foreach($items as $itemRow) {
+for ($i = 0; $i < count($items); $i++) {
+    $itemRow = $items[$i];
+    $isTop = $i == 0;
+    $isBot = $i == count($items) - 1;
     displayItem($itemRow, $locOptions,
-        getErrorMessages(intval($itemRow["content_item_id"])));
+        getErrorMessages(intval($itemRow["content_item_id"])), $isTop, $isBot);
 }
 
 if (empty($blankRow)) {
