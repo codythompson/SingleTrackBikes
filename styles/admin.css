@@ -60,3 +60,11 @@
 .st-images-modal-fclose {
     margin-left: 8px;
 }
+
+/*
+ * Product styles
+ *
+ */
+#st-product-edit .input-append {
+    display: block;
+}

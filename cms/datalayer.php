@@ -270,6 +270,19 @@ function getProductInfo($intProductId, $boolGetChildren) {
     return $result;
 }
 
+function getProductStyleInfo() {
+    global $mysqli;
+
+    $query = "select * from single_track.product_style ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->execute();
+    return fetchRows($stmt);
+}
+
 /*
  * Setters
  */
@@ -466,5 +479,32 @@ function reorderContentItemDown($downItemId) {
     }
 
     return $stmt->affected_rows > 0;
+}
+
+function updateProductInfo($pId, $styleId, $name, $descr, $longDescr,
+    $offsiteUrl, $offsiteUrlText, $imageUrl, $bgImageUrl) {
+
+    global $mysqli;
+
+    $query = "update single_track.product " .
+        "set product_style_id = ?, " .
+        "name = ?, " .
+        "descr = ?, " .
+        "long_descr = ?, " .
+        "offsite_url = ?, " .
+        "offsite_url_text = ?, " .
+        "image_url = ?, " .
+        "background_image_url = ? " .
+        "where product_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("isssssssi", $styleId, $name, $descr, $longDescr,
+        $offsiteUrl, $offsiteUrlText, $imageUrl, $bgImageUrl, $pId);
+    $stmt->execute();
+    var_dump($styleId);
+    return $stmt->affected_rows == 1;
 }
 ?>
