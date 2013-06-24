@@ -24,7 +24,7 @@ class NavBar extends HtmlElement {
 
             $childItem = new HtmlElement("li");
             $classes = array();
-            $linkUrlBase = removeQueryString($link["link_url"]);
+            $linkUrlBase = $link["link_url"];
             if ($linkUrlBase == $activeUrl) {
                 $classes[] = "active";
             }
@@ -91,18 +91,25 @@ class NavBar extends HtmlElement {
         $fbItemUlLi->text = "<a href=\"https://www.facebook.com/pages/Single-Track-Bikes/285426214809646\" target=\"_blank\"> Facebook Page </a>";
         $fbItemUl->childElements[] = $fbItemUlLi;
         $fbItemUlLi = new HtmlElement("li");
-        $fbItemUlLi->text = "<a><iframe src=\"//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FSingle-Track-Bikes%2F285426214809646&amp;send=false&amp;layout=standard&amp;width=450&amp;show_faces=false&amp;font&amp;colorscheme=light&amp;action=like&amp;height=35\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:35px;\" allowTransparency=\"true\"></iframe></a>";
+        $fbItemUlLi->text = "<iframe src=\"//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FSingle-Track-Bikes%2F285426214809646&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;font&amp;colorscheme=light&amp;action=like&amp;height=21\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:150px; height:21px;\" allowTransparency=\"true\"></iframe>";
         $fbItemUl->childElements[] = $fbItemUlLi;
         $fbItem->childElements[] = $fbItemUl;
         $this->childElements[] = $fbItem;
 
         $twtrItem = new HtmlElement("li", null, "dropdown pull-right-big");
-        $twtrItemLink = new HtmlElement("a", null, "dropdown-toggle");
+        $twtrItemLink = new HtmlElement("a");
+        $twtrItemLink->setAttribute("href", "http://twitter.com");
+        $twtrItemLink->setAttribute("target", "_blank");
+        $twtrItemLink->text = "<img src=\"/images/twitter-small.png\" alt=\"" .
+            "twitter\" />";
+        /*$twtrItemLink = new HtmlElement("a", null, "dropdown-toggle");
         $twtrItemLink->setAttribute("href", "");
         $twtrItemLink->setAttribute("data-toggle", "dropdown");
         $twtrItemLink->text = "<img src=\"/images/twitter-small.png\" alt=\"" .
             "twitter\" .>";
+         */
         $twtrItem->childElements[] = $twtrItemLink;
+        /*
         $twtrItemUl = new HtmlElement("ul", null, "dropdown-menu");
         $twtrItemUl->setAttribute("role", "menu");
         $twtrItemUlLi = new HtmlElement("li");
@@ -112,6 +119,7 @@ class NavBar extends HtmlElement {
         $twtrItemUlLi->text = "<a href=\"\">Twitter Feed</a>";
         $twtrItemUl->childElements[] = $twtrItemUlLi;
         $twtrItem->childElements[] = $twtrItemUl;
+         */
         $this->childElements[] = $twtrItem;
     }
 }

@@ -1,7 +1,7 @@
 -- MAKE SURE the product table is brand new when this gets run!
 
 insert into single_track.product
-(product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url)
+(product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url, permanent)
 values (
 1,
 null,
@@ -11,11 +11,12 @@ null,
 null,
 null,
 null,
-'/images/Front_COUNTER.JPG'
+'/images/Front_COUNTER.JPG',
+1
 );
 
 insert into single_track.product
-(product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url)
+(product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url, permanent)
 values (
 2,
 1,
@@ -25,7 +26,38 @@ values (
 null,
 null,
 null,
-'/images/SDC10465.JPG'
+'/images/SDC10465.JPG',
+1
+);
+
+insert into single_track.product
+(product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url, permanent)
+values (
+3,
+1,
+1,
+'Parts',
+'Parts we sell',
+null,
+null,
+null,
+'/images/FRONT_COUNTER.JPG',
+1
+);
+
+insert into single_track.product
+(product_id, parent_product_id, product_style_id, `name`, descr, offsite_url, offsite_url_text, image_url, background_image_url, permanent)
+values (
+4,
+1,
+1,
+'Gear',
+'Gear we sell',
+null,
+null,
+null,
+'/images/FRONT_COUNTER.JPG',
+1
 );
 
 insert into single_track.product

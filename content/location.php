@@ -9,7 +9,7 @@ $addText = getMiscText(ST_MISC_TEXT_ADDRESS_NAME);
 $phoneText = getMiscText(ST_MISC_TEXT_PHONE_NAME);
 $hoursText = getMiscText(ST_MISC_TEXT_HOURS_NAME);
 ?>
-<div class="well">
+<div class="well st-page-container">
 
 <h2>Location and Contact info</h2>
 

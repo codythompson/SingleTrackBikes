@@ -19,3 +19,28 @@ value
 ('Footer Text', 'The text that will be displayed in the footer',
 '<h4>Located at 575 W Riordan Rd. next door to Oregano\'s...</h4> <p> Singletrack bikes is a no-attitude, full-service bicycle shop. We carry Trek, and Surly bicycles. We service all makes and models from the harshly-ridden Huffy to the pampered Pinarello. Our customer service and attention to detail are what set us apart from the competition. While Intimidation and aggressive sales techniques work for some shops, we prefer a friendly, down to earth environment where the customer feels welcome. Come see for yourself.  </p>'
 );
+
+insert into single_track.misc_text
+value
+('Racing Text', 'The text that will be displayed on the Racing page.',
+'Single Track sponsors a racing team'
+);
+
+insert into single_track.misc_text
+value
+('Racing Title', 'The heading that will be displayed on the Racing page.',
+'Single Track sponsors a racing team'
+);
+
+insert into single_track.misc_text
+value
+('About Us Text', 'The text that will be displayed on the About Us page.',
+'What should we say about the shop that hasn\'t already been said on the footer<br/>whatever that is it will go here.'
+);
+
+
+insert into single_track.misc_text
+value
+('Jobs Text', 'The text that will be displayed on the jobs page.',
+'We occasionally hire people.'
+);

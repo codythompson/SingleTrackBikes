@@ -6,7 +6,7 @@ if (isset($_GET["page_content_id"])) {
 $pageInfo = getPageContent($pcId);
 ?>
 
-<div class="well">
+<div class="well st-page-container">
 <?php
 echo "<h1>" . $pageInfo["page_heading"] . "</h1>";
 ?>

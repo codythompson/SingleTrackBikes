@@ -386,17 +386,18 @@ if (!empty($succMess)) {
     }
 }
 
-if (isset($pInfo["parent_product_id"]) && !empty($pInfo["parent_product_id"])) {
+$cantDelete = (isset($pInfo["permanent"]) && intval($pInfo["permanent"]) == 1);
+if ($cantDelete) {
 ?>
-    <button type="button" class="btn btn-danger"
-        onmouseup="toggleContainer('st-content-product-delete')">
+    <button type="button" class="btn disabled">
         <i class="icon-trash icon-white"></i>
     </button>
 <?php
 }
 else {
 ?>
-    <button type="button" class="btn disabled">
+    <button type="button" class="btn btn-danger"
+        onmouseup="toggleContainer('st-content-product-delete')">
         <i class="icon-trash icon-white"></i>
     </button>
 <?php
@@ -411,7 +412,9 @@ else {
 <?php
 displayEditArea("st-product-edit", $pId, $pName, $pDescr, $pLDescr, $pOffsite, $pOffsiteText,
     $imgUrl, $bgUrl, $selStyle, $styleInfo, $errMess);
-displayDeleteArea($pId);
+if (!$cantDelete) {
+    displayDeleteArea($pId);
+}
 ?>
 
 <hr />

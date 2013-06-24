@@ -60,8 +60,24 @@ body {
     width: 100%;
 }
 
+.st-page-container {
+    overflow: auto;
+}
+
 .st-footer a {
     margin-right: 1%;
+}
+
+.st-embedded-container {
+    text-align: center;
+}
+
+.st-embedded {
+    display: inline-block;
+    margin: 16px;
+    padding: 16px;
+
+    background-color: #444;
 }
 
 @media (max-width: 979px) {

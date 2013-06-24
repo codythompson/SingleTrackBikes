@@ -12,7 +12,7 @@ body {
 
 .st-content-edit-area {
     width: 500px;
-    height: 300px;
+    min-height: 300px;
 
     color: #f66;
     background-color: #686868;
@@ -78,7 +78,7 @@ body {
  * Misc Edit styles
  */
 .st-misc-edit-area {
-    height:200px;
+    min-height:200px;
     background-color: #fff;
     border: 1px solid #ddd;
 }

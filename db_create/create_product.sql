@@ -11,6 +11,7 @@ CREATE  TABLE `single_track`.`product` (
   `offsite_url_text` VARCHAR(255) NULL ,
   `image_url` TEXT NULL ,
   `background_image_url` TEXT NULL ,
+  `permanent` BIT NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`product_id`) ,
   INDEX `fk_product_style_idx` (`product_style_id` ASC) ,
   CONSTRAINT `fk_product_style`
