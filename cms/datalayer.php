@@ -315,6 +315,40 @@ function getAllMiscText() {
     return fetchRows($stmt);
 }
 
+function getPageContent($pageContentId) {
+    global $mysqli;
+
+    $query = "select * from single_track.page_content pc ".
+        "where pc.page_content_id = ? ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->bind_param("i", $pageContentId);
+    $stmt->execute();
+    $result = fetchRows($stmt);
+    if (count($rows) > 0) {
+        return $result[0];
+    }
+    else {
+        return null;
+    }
+}
+
+function getAllPageContent() {
+    global $mysqli;
+
+    $query = "select * from single_track.page_content";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->execute();
+    return fetchRows($stmt);
+}
+
 /*
  * Setters
  */
@@ -634,6 +668,61 @@ function updateMiscText($miscTextName, $value) {
         return false;
     }
     $stmt->bind_param("ss", $value, $miscTextName);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function insertPageContent($pageTitle, $pageHead, $pageContent) {
+    global $mysqli;
+
+    $query = "insert into single_track.page_content " .
+        "(page_title, page_heading, page_content) " .
+        "values(?, ?, ?)";
+
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("sss", $pageTitle, $pageHead, $pageContent);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function updatePageContent($pageId, $pageTitle, $pageHead, $pageContent) {
+    global $mysqli;
+
+    $query = "update single_track.page_content " .
+        "set page_title = ?, " .
+        "page_heading = ?, " .
+        "page_content = ? " .
+        "where page_content_id = ?";
+
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("sssi", $pageTitle, $pageHead, $pageContent, $pageId);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function deletePageContent($pageId) {
+    global $mysqli;
+
+    $query = "delete from single_track.page_content " .
+        "where page_content_id = ?";
+
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("i", $pageId);
     $stmt->execute();
 
     return $stmt->affected_rows == 1;
