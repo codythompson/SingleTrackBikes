@@ -288,7 +288,9 @@ function displayItem($itemRow, $locationInfo, $messages = null, $isTop = false,
     else {
 ?>
     <button class="btn btn-success" onmouseup="toggleContainer('<?php echo $editContId ?>')"
-        title="Add Slider Item">+</button>
+        title="Add Slider Item">
+        <i class="icon-plus icon-white"></i>
+        </button>
 <?php
     }
 ?>

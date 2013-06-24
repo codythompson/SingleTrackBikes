@@ -3,7 +3,7 @@ require_once("navbar.php");
 require_once("announcements.php");
 require_once("datalayer.php");
 
-define("ST_FOOTER_CONTENT_FILE", "content/footer.html");
+define("ST_MISC_TEXT_FOOTER_NAME", "Footer Text");
 /*
  * Echos the HTMl for a web page
  *
@@ -29,6 +29,8 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
 
     $ann = getAnnouncements(3);
     $ann = new Announcements("st-anns", $ann);
+
+    $footerText = getMiscText(ST_MISC_TEXT_FOOTER_NAME);
 ?>
 <!DOCTYPE html>
     <html lang="en">
@@ -121,7 +123,7 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
 
             <div class="well st-footer">
 <?php
-    require(ST_FOOTER_CONTENT_FILE);
+    echo $footerText;
 ?>
                 <hr />
 <?php

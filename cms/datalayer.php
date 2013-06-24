@@ -283,6 +283,38 @@ function getProductStyleInfo() {
     return fetchRows($stmt);
 }
 
+function getMiscText($miscTextName) {
+    global $mysqli;
+
+    $query = "select * from single_track.misc_text mt " .
+        "where LOWER(mt.misc_text_name) = LOWER(?) ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->bind_param("s", $miscTextName);
+    $stmt->execute();
+    $result = fetchRows($stmt);
+    if (count($result) == 1) {
+        return $result[0]["value"];
+    }
+    else return null;
+}
+
+function getAllMiscText() {
+    global $mysqli;
+
+    $query = "select * from single_track.misc_text";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->execute();
+    return fetchRows($stmt);
+}
+
 /*
  * Setters
  */
@@ -584,6 +616,24 @@ function setParent($productId, $parentId) {
         return false;
     }
     $stmt->bind_param("ii", $parentId, $productId);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function updateMiscText($miscTextName, $value) {
+    global $mysqli;
+
+    $query = "update single_track.misc_text " .
+        "set value = ? " .
+        "where LOWER(misc_text_name) = LOWER(?)";
+
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ss", $value, $miscTextName);
     $stmt->execute();
 
     return $stmt->affected_rows == 1;

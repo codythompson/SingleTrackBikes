@@ -320,9 +320,9 @@ function displayDeleteArea($pId) {
             </button>
         </form>
         <div class="alert alert-warning">
-            Any sub-categories of this product/category will not be visible to
-            the public until they are added as sub-categories to an existing
-            product/category
+            Any sub-categories of this product/category will be orphaned and
+            will not be visible to the public until they are added as
+            sub-categories to an existing product/category
         </div>
     </div>
 <?php

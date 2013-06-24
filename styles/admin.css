@@ -73,3 +73,12 @@ body {
 #st-product-edit .input-append {
     display: block;
 }
+
+/*
+ * Misc Edit styles
+ */
+.st-misc-edit-area {
+    height:200px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
