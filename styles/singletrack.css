@@ -70,3 +70,15 @@ body {
     }
 }
 
+@media (max-width: 767px) {
+    .stack-small {
+        float: none !important;
+    }
+}
+
+@media (min-width: 980px) {
+    .pull-right-big {
+        float: right !important;
+    }
+}
+

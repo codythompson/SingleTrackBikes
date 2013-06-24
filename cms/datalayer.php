@@ -98,6 +98,38 @@ function GetNavLinks() {
     return $result;
 }
 
+function navLinkExists($linkUrl) {
+    global $mysqli;
+
+    $query = "select nl.link_url from single_track.nav_links nl " .
+        "where nl.link_url = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("s", $linkUrl);
+    $stmt->execute();
+    $result = fetchRows($stmt);
+    return !empty($result);
+}
+
+function footerLinkExists($linkUrl) {
+    global $mysqli;
+
+    $query = "select nl.link_url from single_track.footer_links nl " .
+        "where nl.link_url = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("s", $linkUrl);
+    $stmt->execute();
+    $result = fetchRows($stmt);
+    return !empty($result);
+}
+
 function getFooterLinks() {
     global $mysqli;
 
@@ -328,7 +360,7 @@ function getPageContent($pageContentId) {
     $stmt->bind_param("i", $pageContentId);
     $stmt->execute();
     $result = fetchRows($stmt);
-    if (count($rows) > 0) {
+    if (count($result) > 0) {
         return $result[0];
     }
     else {
@@ -714,6 +746,20 @@ function updatePageContent($pageId, $pageTitle, $pageHead, $pageContent) {
 function deletePageContent($pageId) {
     global $mysqli;
 
+    $linkUrl = getNavLinkUrl($pageId);
+    if (navLinkExists($linkUrl)) {
+        $delResult = deleteFromNavBar($pageId);
+        if ($delResult !== true) {
+            return false;
+        }
+    }
+    if (footerLinkExists($linkUrl)) {
+        $delResult = deleteFromFooterLinks($pageId);
+        if ($delResult !== true) {
+            return false;
+        }
+    }
+
     $query = "delete from single_track.page_content " .
         "where page_content_id = ?";
 
@@ -726,5 +772,77 @@ function deletePageContent($pageId) {
     $stmt->execute();
 
     return $stmt->affected_rows == 1;
+}
+
+function addNavLink($linkUrl, $linkText) {
+    global $mysqli;
+
+    $query = "insert into single_track.nav_links " .
+        "(link_url, link_text) " .
+        "values (?, ?)";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ss", $linkUrl, $linkText);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function addFooterLink($linkUrl, $linkText) {
+    global $mysqli;
+
+    $query = "insert into single_track.footer_links " .
+        "(link_url, link_text) " .
+        "values (?, ?)";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ss", $linkUrl, $linkText);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function deleteFromNavBar($pageId) {
+    global $mysqli;
+
+    $query = "delete from single_track.nav_links " .
+        "where link_url = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $linkUrl = getNavLinkUrl($pageId);
+    $stmt->bind_param("s", $linkUrl);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function deleteFromFooterLinks($pageId) {
+    global $mysqli;
+
+    $query = "delete from single_track.footer_links " .
+        "where link_url = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $linkUrl = getNavLinkUrl($pageId);
+    $stmt->bind_param("s", $linkUrl);
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function getNavLinkUrl($pageId) {
+    return "/page.php?page_content_id=$pageId";
 }
 ?>

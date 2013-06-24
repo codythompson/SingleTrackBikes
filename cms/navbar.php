@@ -31,6 +31,7 @@ class NavBar extends HtmlElement {
             if ($isDDL) {
                 $classes[] = "dropdown";
             }
+            $classes[] = "stack-small";
             if (count($classes) > 0) {
                 $childItem->cssClass = "";
                 for($j = 0; $j < count($classes); $j++) {
@@ -77,7 +78,7 @@ class NavBar extends HtmlElement {
         }
 
         //Facebook links
-        $fbItem = new HtmlElement("li", null, "dropdown pull-right");
+        $fbItem = new HtmlElement("li", null, "dropdown pull-right-big");
         $fbItemLink = new HtmlElement("a", null, "dropdown-toggle");
         $fbItemLink->setAttribute("href", "");
         $fbItemLink->setAttribute("data-toggle", "dropdown");
@@ -95,7 +96,7 @@ class NavBar extends HtmlElement {
         $fbItem->childElements[] = $fbItemUl;
         $this->childElements[] = $fbItem;
 
-        $twtrItem = new HtmlElement("li", null, "dropdown pull-right");
+        $twtrItem = new HtmlElement("li", null, "dropdown pull-right-big");
         $twtrItemLink = new HtmlElement("a", null, "dropdown-toggle");
         $twtrItemLink->setAttribute("href", "");
         $twtrItemLink->setAttribute("data-toggle", "dropdown");

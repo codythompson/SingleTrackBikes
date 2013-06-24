@@ -105,11 +105,35 @@ else if ($pFormType === "del_page") {
 
     $succMess[] = "Successfully deleted the page.";
 }
+else if ($pFormType === "page_add_nav") {
+    $linkUrl = $_POST["link_url"];
+    $linkText = $_POST["link_text"];
+
+    addNavLink($linkUrl, $linkText);
+}
+else if ($pFormType === "page_remove_nav") {
+    $pageId = intval($_POST["page_id"]);
+
+    deleteFromNavBar($pageId);
+}
+else if ($pFormType === "page_add_footer") {
+    $linkUrl = $_POST["link_url"];
+    $linkText = $_POST["link_text"];
+
+    addFooterLink($linkUrl, $linkText);
+}
+else if ($pFormType === "page_remove_footer") {
+    $pageId = intval($_POST["page_id"]);
+
+    deleteFromFooterLinks($pageId);
+}
 
 /*
  * Html gen.
  */
-function displayItem($pageRow, $cssId, $errorMessages) {
+function displayItem($pageRow, $cssId, $errorMessages, $inNavBar = false, 
+    $inFooter = false) {
+
     $cssEditId = $cssId . "-edit";
     $cssDelId = $cssId . "-del";
     $cssValueId = $cssId . "-value";
@@ -143,10 +167,67 @@ function displayItem($pageRow, $cssId, $errorMessages) {
         onmouseup="toggleContainer('<?php echo $cssEditId; ?>')">
         <i class="icon-pencil icon-white"></i>
     </button>
+
+<?php
+if ($inNavBar) {
+?>
+    <form action="custompage.php" method="POST" class="st-content-up">
+        <input type="hidden" name="form_type" value="page_remove_nav" />
+        <input type="hidden" name="page_id"
+            value="<?php echo $pageRow["page_content_id"]; ?>" />
+
+        <input type="submit" value="Remove from Nav Bar" class="btn btn-danger"
+            title="Remove the link to this page from the navigation bar at the top of the website." />
+    </form>
+<?php
+}
+else {
+?>
+    <form action="custompage.php" method="POST" class="st-content-up">
+        <input type="hidden" name="form_type" value="page_add_nav" />
+        <input type="hidden" name="link_url"
+            value="/page.php?page_content_id=<?php echo $pageRow["page_content_id"]; ?>" />
+        <input type="hidden" name="link_text"
+            value="<?php echo $pageRow["page_heading"]; ?>" />
+
+        <input type="submit" value="Add to Nav Bar" class="btn btn-info"
+            title="Add a link to this page to the navigation bar at the top of the website." />
+    </form>
+<?php
+}
+?>
+
+<?php
+if ($inFooter) {
+?>
+    <form action="custompage.php" method="POST" class="st-content-up">
+        <input type="hidden" name="form_type" value="page_remove_footer" />
+        <input type="hidden" name="page_id"
+            value="<?php echo $pageRow["page_content_id"]; ?>" />
+
+        <input type="submit" value="Remove from Footer" class="btn btn-danger"
+            title="Remove the link to this page from the footer links at the bottom of the website." />
+    </form>
+<?php
+}
+else {
+?>
+    <form action="custompage.php" method="POST" class="st-content-up">
+        <input type="hidden" name="form_type" value="page_add_footer" />
+        <input type="hidden" name="link_url"
+            value="/page.php?page_content_id=<?php echo $pageRow["page_content_id"]; ?>" />
+        <input type="hidden" name="link_text"
+            value="<?php echo $pageRow["page_heading"]; ?>" />
+
+        <input type="submit" value="Add to Footer" class="btn btn-info"
+            title="Add a link to this page to the footer links at the bottom of the website." />
+    </form>
+<?php
+}
+?>
     <span class="alert alert-info"><?php echo $pageRow["page_heading"]; ?></span>
 <?php
-        $absUrl = "http://" . ST_LOCATION . "/page.php?page_content_id=" .
-            $pageRow["page_content_id"];
+        $absUrl = "http://" . ST_LOCATION . getNavLinkUrl($pageRow["page_content_id"]);
 ?>
     <span class="alert alert-info">
         <a href="<?php echo $absUrl; ?>" target="_blank">visit</a> | 
@@ -233,8 +314,10 @@ if (empty($pageRows)) {
 }
 else {
     foreach($pageRows as $row) {
+        $inNavBar = navLinkExists(getNavLinkUrl($row["page_content_id"]));
+        $inFooter = footerLinkExists(getNavLinkUrl($row["page_content_id"]));
         displayItem($row, "page-edit",
-            getMessage(intval($row["page_content_id"])));
+            getMessage(intval($row["page_content_id"])), $inNavBar, $inFooter);
     }
 }
 ?>
