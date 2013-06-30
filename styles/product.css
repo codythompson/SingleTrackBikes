@@ -39,6 +39,10 @@
     width: 15%;
 }
 
+.st-product-lgbgscroll .product-imagecontainer a {
+    width: 100%;
+}
+
 .st-product-lgbgscroll .product-innercontainer {
     position: absolute;
     top: 5%;

@@ -98,7 +98,7 @@ class NavBar extends HtmlElement {
 
         $twtrItem = new HtmlElement("li", null, "dropdown pull-right-big");
         $twtrItemLink = new HtmlElement("a");
-        $twtrItemLink->setAttribute("href", "http://twitter.com");
+        $twtrItemLink->setAttribute("href", "https://twitter.com/singletrackshop");
         $twtrItemLink->setAttribute("target", "_blank");
         $twtrItemLink->text = "<img src=\"/images/twitter-small.png\" alt=\"" .
             "twitter\" />";
