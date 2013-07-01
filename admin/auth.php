@@ -21,7 +21,7 @@ function createUser($uname, $pword, $email, $secQ, $secQA) {
     global $mysqli;
 
     $salt = generateSalt();
-    $hash = crypt($pword, "$2a$15$" . $salt);
+    $hash = crypt($pword, "$2a$10$" . $salt);
 
     $query = "insert into single_track.user ";
     $query .= "(user_name, user_email, user_sec_q, user_sec_q_a, user_salt, user_hash) ";
