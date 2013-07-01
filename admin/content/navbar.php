@@ -151,6 +151,23 @@ function displayItem($navRow, $cssId, $isTop, $isBottom, $errorMessages) {
     </form>
 
     </div>
+
+    <!-- delete area -->
+    <div id="<?php echo $cssDelId; ?>" class="st-content-delete well">
+    <form action="navbar.php" method="POST">
+        <input type="hidden" name="form_type" value="del_nav" />
+        <input type="hidden" name="nav_link_id" value="<?php echo $navId; ?>" />
+        <input type="hidden" name="parent_nav_link_id" value="<?php echo $parentId; ?>" />
+    
+        <p class="lead">Are you sure you want to permanently delete this nav link?</p>
+    
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <button type="button" class="btn btn-info" onmouseup="toggleContainer('<?php echo $cssDelId; ?>')">
+            Hide
+        </button>
+    </form>
+    </div>
+    
 </div>
 <?php
 }
@@ -266,6 +283,13 @@ else if ($nFormType === "edit_nav") {
 
     $_GET["parent_id"] = $parentId;
 }
+else if ($nFormType === "del_nav") {
+    $navId = intval($_POST["nav_link_id"]);
+    $parentId = intval($_POST["parent_nav_link_id"]);
+    deleteNavLink($navId);
+
+    $_GET["parent_id"] = $parentId;
+}
 
 /*
  * Setup 
@@ -290,13 +314,6 @@ You are currently editing the dropdown options under
 <a href="/admin/navbar.php" class="btn btn-info">Back</a>
 </p>
 <?php
-    foreach($succMess as $mess) {
-?>
-<div class="alert alert-success">
-<?php echo $mess; ?>
-</div>
-<?php
-    }
 
     if (empty($navLinks)) {
 ?>
@@ -309,6 +326,13 @@ You are currently editing the dropdown options under
 else if (empty($navLinks)) {
 ?>
 <p class="alert alert-warning">There are currently no nav-links</p>
+<?php
+}
+foreach($succMess as $mess) {
+?>
+<div class="alert alert-success">
+<?php echo $mess; ?>
+</div>
 <?php
 }
 

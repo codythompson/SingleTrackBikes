@@ -1044,4 +1044,21 @@ function updateNavLink($linkId, $url, $text, $hover) {
     $stmt->execute();
     return $stmt->affected_rows > 0;
 }
+
+function deleteNavLink($linkId) {
+    global $mysqli;
+
+    $query = "delete from single_track.nav_links " .
+        "where nav_link_id = ? " .
+        "or parent_nav_link_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $stmt->bind_param("ii", $linkId, $linkId);
+    $stmt->execute();
+    return $stmt->affected_rows > 0;
+}
+
 ?>
