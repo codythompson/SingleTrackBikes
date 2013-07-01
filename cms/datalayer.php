@@ -57,7 +57,8 @@ function GetNavLinks() {
     global $mysqli;
 
     $query = "select * from nav_links nl " .
-        "where parent_nav_link_id is null";
+        "where nl.parent_nav_link_id is null " .
+        "order by nl.order";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
@@ -75,7 +76,8 @@ function GetNavLinks() {
     $stmt->close();
 
     $childQuery = "select * from nav_links nl " .
-        "where parent_nav_link_id = ?";
+        "where parent_nav_link_id = ? " .
+        "order by nl.order";
     $parentId;
     $stmt = $mysqli->prepare($childQuery);
     if (!$stmt) {
@@ -95,6 +97,49 @@ function GetNavLinks() {
         $result[$i] = $row;
     }
 
+    return $result;
+}
+
+function getNavLinksByParent($parentId) {
+    global $mysqli;
+
+    $query = "select * from single_track.nav_links nl ";
+    if ($parentId > 0) {
+        $query .= "where nl.parent_nav_link_id = ? ";
+    }
+    else {
+        $query .= "where nl.parent_nav_link_id is null ";
+    }
+    $query .= "order by nl.order";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    if ($parentId > 0) {
+        $stmt->bind_param("i", $parentId);
+    }
+    $stmt->execute();
+    return fetchRows($stmt);
+}
+
+function getNavLinkText($linkId) {
+    global $mysqli;
+
+    $query = "select nl.link_text from single_track.nav_links nl " .
+        "where nl.nav_link_id = ? " .
+        "order by nl.order";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return null;
+    }
+    $stmt->bind_param("i", $linkId);
+    $stmt->execute();
+    $result = fetchRows($stmt);
+    if (!empty($result)) {
+        return $result[0]["link_text"];
+    }
     return $result;
 }
 
@@ -774,18 +819,25 @@ function deletePageContent($pageId) {
     return $stmt->affected_rows == 1;
 }
 
-function addNavLink($linkUrl, $linkText) {
+function addNavLink($linkUrl, $linkText, $hoverText = null) {
     global $mysqli;
 
     $query = "insert into single_track.nav_links " .
-        "(link_url, link_text) " .
-        "values (?, ?)";
+        "(link_url, link_text, `order`) " .
+        "values (?, ?, (" .
+        "select MAX(nl.order) from single_track.nav_links nl " .
+        "where nl.parent_nav_link_id is null))";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
         return false;
     }
-    $stmt->bind_param("ss", $linkUrl, $linkText);
+    if (empty($hoverText)) {
+        $stmt->bind_param("ss", $linkUrl, $linkText);
+    }
+    else {
+        $stmt->bind_param("sss", $linkUrl, $linkText, $hoverText);
+    }
     $stmt->execute();
 
     return $stmt->affected_rows == 1;
@@ -844,5 +896,87 @@ function deleteFromFooterLinks($pageId) {
 
 function getNavLinkUrl($pageId) {
     return "/page.php?page_content_id=$pageId";
+}
+
+function reOrderNavLinkUp($upLinkId, $parentId) {
+    global $mysqli;
+
+    $items = getNavLinksByParent($parentId);
+    
+    $foundItem = false;
+    for($i = 1; $i < count($items) && !$foundItem; $i++) {
+        $item = $items[$i];
+
+        if (intval($item["nav_link_id"]) == $upLinkId) {
+            $foundItem = true;
+            $tmp = $items[$i - 1];
+            $items[$i - 1] = $item;
+            $items[$i] = $tmp;
+        }
+    }
+    if (!$foundItem) {
+        return false;
+    }
+
+    $query = "update single_track.nav_links " .
+        "set `order` = ? " .
+        "where nav_link_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $curId = 0;
+    $i = 0;
+    $stmt->bind_param("ii", $i, $curId);
+    while ($i < count($items)) {
+        $item = $items[$i];
+        $curId = $item["nav_link_id"];
+        $stmt->execute();
+        $i++;
+    }
+
+    return $stmt->affected_rows > 0;
+}
+
+function reOrderNavLinkDown($downLinkId, $parentId) {
+    global $mysqli;
+
+    $items = getNavLinksByParent($parentId);
+    
+    $foundItem = false;
+    for($i = 0; $i < count($items) - 1 && !$foundItem; $i++) {
+        $item = $items[$i];
+
+        if (intval($item["nav_link_id"]) == $downLinkId) {
+            $foundItem = true;
+            $tmp = $items[$i + 1];
+            $items[$i + 1] = $item;
+            $items[$i] = $tmp;
+        }
+    }
+    if (!$foundItem) {
+        return false;
+    }
+
+    $query = "update single_track.nav_links " .
+        "set `order` = ? " .
+        "where nav_link_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    $curId = 0;
+    $i = 0;
+    $stmt->bind_param("ii", $i, $curId);
+    while ($i < count($items)) {
+        $item = $items[$i];
+        $curId = $item["nav_link_id"];
+        $stmt->execute();
+        $i++;
+    }
+
+    return $stmt->affected_rows > 0;
 }
 ?>
