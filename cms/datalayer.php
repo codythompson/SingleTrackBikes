@@ -823,10 +823,18 @@ function addNavLink($linkUrl, $linkText, $hoverText = null) {
     global $mysqli;
 
     $query = "insert into single_track.nav_links " .
-        "(link_url, link_text, `order`) " .
+        "(link_url, link_text, `order` ";
+    if (!empty($hoverText)) {
+        $query .= ", link_hover_text ";
+    }
+    $query .= ") " .
         "values (?, ?, (" .
         "select MAX(nl.order) from single_track.nav_links nl " .
-        "where nl.parent_nav_link_id is null))";
+        "where nl.parent_nav_link_id is null) ";
+    if (!empty($hoverText)) {
+        $query .= ", ? ";
+    }
+    $query .= ")";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
@@ -837,6 +845,38 @@ function addNavLink($linkUrl, $linkText, $hoverText = null) {
     }
     else {
         $stmt->bind_param("sss", $linkUrl, $linkText, $hoverText);
+    }
+    $stmt->execute();
+
+    return $stmt->affected_rows == 1;
+}
+
+function addNavLinkWParent($parentId, $linkUrl, $linkText, $hoverText = null) {
+    global $mysqli;
+
+    $query = "insert into single_track.nav_links " .
+        "(parent_nav_link_id, link_url, link_text, `order` ";
+    if (!empty($hoverText)) {
+        $query .= ", link_hover_text ";
+    }
+    $query .= ") " .
+        "values (?, ?, ?, (" .
+        "select MAX(nl.order) from single_track.nav_links nl " .
+        "where nl.parent_nav_link_id is null )";
+    if (!empty($hoverText)) {
+        $query .= " , ? ";
+    }
+    $query .= ") ";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    if (empty($hoverText)) {
+        $stmt->bind_param("iss", $parentId, $linkUrl, $linkText);
+    }
+    else {
+        $stmt->bind_param("isss", $parentId, $linkUrl, $linkText, $hoverText);
     }
     $stmt->execute();
 
@@ -977,6 +1017,31 @@ function reOrderNavLinkDown($downLinkId, $parentId) {
         $i++;
     }
 
+    return $stmt->affected_rows > 0;
+}
+
+function updateNavLink($linkId, $url, $text, $hover) {
+    global $mysqli;
+
+    $query = "update single_track.nav_links " .
+        "set link_url = ?, " .
+        "link_text = ?, ";
+    if (!empty($hover)) {
+        $query .= "link_hover_text = ? ";
+    }
+    $query .= "where nav_link_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        handleError($mysqli->error);
+        return false;
+    }
+    if (empty($hover)) {
+        $stmt->bind_param("ssi", $url, $text, $linkId);
+    }
+    else {
+        $stmt->bind_param("sssi", $url, $text, $hover, $linkId);
+    }
+    $stmt->execute();
     return $stmt->affected_rows > 0;
 }
 ?>
