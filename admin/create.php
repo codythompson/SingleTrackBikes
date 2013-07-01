@@ -40,8 +40,8 @@ if (isset($_POST["form_type"]) && $_POST["form_type"] === "do_not_reset") {
     else {
         $result = createUser($uname, $pword1, "blah", "blah", "blah");
         if ($result === true) {
-            $succMess = "Successfully created user <strong>$uname</strong>" .
-                "<a href='index.php' class='btn btn-info'>Admin Home</a>";
+            $succMess = "Successfully created user <strong>$uname</strong> " .
+                "<a href='index.php' class='btn btn-info'>Login</a>";
         }
         else {
             $errMess[] = "An error occurred.";
