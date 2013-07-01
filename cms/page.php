@@ -25,7 +25,7 @@ define("ST_MISC_TEXT_FOOTER_NAME", "Footer Text");
  * A string filepath of the html/php content file to be included
  */
 function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
-    $footerLinksInfo) {
+    $footerLinksInfo, $metaKeys = null, $metaDescr = null) {
 
     $ann = getAnnouncements(3);
     $ann = new Announcements("st-anns", $ann);
@@ -38,6 +38,22 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
         <title><?php echo $title; ?></title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<?php
+    if (!empty($metaDescr)) {
+?>
+    <meta name="description" content="<?php echo $metaDescr; ?>">
+<?php
+    }
+?>
+
+<?php
+    if (!empty($metaKeys)) {
+?>
+    <meta name="keywords" content="<?php echo $metaKeys; ?>">
+<?php
+    }
+?>
 
         <link rel="stylesheet" href="styles/bootstrap.css" type="text/css" />
         <link rel="stylesheet" href="styles/bootstrap-responsive.css" type="text/css" />

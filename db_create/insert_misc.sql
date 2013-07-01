@@ -17,7 +17,7 @@ values
 insert into single_track.misc_text
 value
 ('Footer Text', 'The text that will be displayed in the footer',
-'<h4>Located at 575 W Riordan Rd. next door to Oregano\'s...</h4> <p> Singletrack bikes is a no-attitude, full-service bicycle shop. We carry Trek, and Surly bicycles. We service all makes and models from the harshly-ridden Huffy to the pampered Pinarello. Our customer service and attention to detail are what set us apart from the competition. While Intimidation and aggressive sales techniques work for some shops, we prefer a friendly, down to earth environment where the customer feels welcome. Come see for yourself.  </p>'
+'<h4>Located at 575 W Riordan Rd. next door to Oregano\'s...</h4> <p> Singletrack bikes is a no-attitude, full-service bicycle shop. We carry Trek, Surly, and Ritchie bicycles. We service all makes and models from the harshly-ridden Huffy to the pampered Pinarello. Our customer service and attention to detail are what set us apart from the competition. While Intimidation and aggressive sales techniques work for some shops, we prefer a friendly, down to earth environment where the customer feels welcome. Come see for yourself.  </p>'
 );
 
 insert into single_track.misc_text
@@ -38,9 +38,20 @@ value
 'What should we say about the shop that hasn\'t already been said on the footer<br/>whatever that is it will go here.'
 );
 
-
 insert into single_track.misc_text
 value
 ('Jobs Text', 'The text that will be displayed on the jobs page.',
 'We occasionally hire people.'
+);
+
+insert into single_track.misc_text
+value
+('Keywords', 'A comma separated list of keywords that will help search engines index the shop.',
+'Flagstaff Bike Shop, Flagstaff Bicycle Shop, Flagstaff Trek, Flagstaff Surly, Flagstaff Ritchey'
+);
+
+insert into single_track.misc_text
+value
+('Description', 'A description that will help search engines index the shop.',
+'Singletrack bikes is a no-attitude, full-service bicycle shop. We carry Trek, and Surly bicycles. We service all makes and models from the harshly-ridden Huffy to the pampered Pinarello. Our customer service and attention to detail are what set us apart from the competition. While Intimidation and aggressive sales techniques work for some shops, we prefer a friendly, down to earth environment where the customer feels welcome. Come see for yourself.'
 );

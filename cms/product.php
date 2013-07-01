@@ -94,7 +94,7 @@ class Product extends HtmlElement {
 
         $innerContEles = array();
 
-        $innerContEles[] = new HtmlElement("h2", null, null, $name);
+        $innerContEles[] = new HtmlElement("h1", null, null, $name);
         $innerContEles[] = new HtmlElement("hr");
 
         if (empty($parentProduct["child_product"])) {
@@ -249,7 +249,7 @@ class Product extends HtmlElement {
         }
 
         $titleChildren = array();
-        $titleChildren[] = new HtmlElement("h2", null, null, $name);
+        $titleChildren[] = new HtmlElement("h1", null, null, $name);
         
         $carouselItems = array();
         if (empty($parentProduct["child_product"])) {
@@ -457,7 +457,7 @@ class Product extends HtmlElement {
         }
 
         $titleEles = array();
-        $titleEles[] = new HtmlElement("h2", null, null, $name);
+        $titleEles[] = new HtmlElement("h1", null, null, $name);
 
         if (empty($parentProduct["child_product"])) {
             $baseChildren[] = new HtmlElement("div", null,
