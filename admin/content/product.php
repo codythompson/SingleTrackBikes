@@ -378,6 +378,11 @@ $imgsMod->writeElement();
 ?>
 <h1>Edit Product/Category Page: <strong>'<?php echo $pName; ?>'</strong></h1>
 
+<p class="alert alert-info">
+    URL for use on NavBar:<br/>
+    <?php echo "/product.php?product_id=$pId"; ?>
+</p>
+
 <div class="st-product">
 <?php
 if (!empty($succMess)) {
