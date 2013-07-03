@@ -24,7 +24,7 @@ if (isset($_POST["form_type"]) && $_POST["form_type"] === "pwordreset") {
         $hash = crypt($pword1, "$2a$10$" . $salt);
         $user = $_SESSION["_user_name_"];
 
-        $query = "update single_track.user " .
+        $query = "update singletrack.user " .
             "set user_salt = ?, " .
             "user_hash = ? ".
             "where user_name = ?";

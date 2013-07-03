@@ -103,7 +103,7 @@ function GetNavLinks() {
 function getNavLinksByParent($parentId) {
     global $mysqli;
 
-    $query = "select * from single_track.nav_links nl ";
+    $query = "select * from singletrack.nav_links nl ";
     if ($parentId > 0) {
         $query .= "where nl.parent_nav_link_id = ? ";
     }
@@ -126,7 +126,7 @@ function getNavLinksByParent($parentId) {
 function getNavLinkText($linkId) {
     global $mysqli;
 
-    $query = "select nl.link_text from single_track.nav_links nl " .
+    $query = "select nl.link_text from singletrack.nav_links nl " .
         "where nl.nav_link_id = ? " .
         "order by nl.order";
     $stmt = $mysqli->prepare($query);
@@ -146,7 +146,7 @@ function getNavLinkText($linkId) {
 function navLinkExists($linkUrl) {
     global $mysqli;
 
-    $query = "select nl.link_url from single_track.nav_links nl " .
+    $query = "select nl.link_url from singletrack.nav_links nl " .
         "where nl.link_url = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -162,7 +162,7 @@ function navLinkExists($linkUrl) {
 function footerLinkExists($linkUrl) {
     global $mysqli;
 
-    $query = "select nl.link_url from single_track.footer_links nl " .
+    $query = "select nl.link_url from singletrack.footer_links nl " .
         "where nl.link_url = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -178,7 +178,7 @@ function footerLinkExists($linkUrl) {
 function getFooterLinks() {
     global $mysqli;
 
-    $query = " select * from single_track.footer_links fl " .
+    $query = " select * from singletrack.footer_links fl " .
         "order by fl.`order`, fl.footer_link_id";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -197,8 +197,8 @@ function getContentItems($limit = 0) {
     global $mysqli;
 
     $query = " select ci.*, cil.css_location_class, cil.name as loc_name " .
-        "from single_track.content_item ci " .
-        "left join single_track.content_item_location cil " .
+        "from singletrack.content_item ci " .
+        "left join singletrack.content_item_location cil " .
         "on ci.content_item_location_id = cil.content_item_location_id " .
         "order by order_num, content_item_id ";
     if ($limit > 0) {
@@ -219,7 +219,7 @@ function getContentItems($limit = 0) {
 function getContentItemLocations() {
     global $mysqli;
 
-    $query = "select * from single_track.content_item_location";
+    $query = "select * from singletrack.content_item_location";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
@@ -288,7 +288,7 @@ function getProductInfoTree($intParentId, $intChildrenDepth = 1) {
         $intParentId = null;
     }
 
-    $query = "select * from single_track.product p ";
+    $query = "select * from singletrack.product p ";
     if (empty($intParentId)) {
         $query .= "where p.parent_product_id is null";
     }
@@ -314,8 +314,8 @@ function getProductInfo($intProductId, $boolGetChildren) {
     $queryParent = "select " .
         "p.*, " .
         "pp.name as parent_name ". 
-        "from single_track.product p " .
-        "left join single_track.product pp " .
+        "from singletrack.product p " .
+        "left join singletrack.product pp " .
         "on p.parent_product_id = pp.product_id " .
         "where p.product_id = ?";
     $stmt = $mysqli->prepare($queryParent);
@@ -335,7 +335,7 @@ function getProductInfo($intProductId, $boolGetChildren) {
     $result = $result[0];
 
     if ($boolGetChildren) {
-        $queryChild = "select * from single_track.product p " .
+        $queryChild = "select * from singletrack.product p " .
             "where p.parent_product_id = ?";
         $stmt = $mysqli->prepare($queryChild);
         $stmt->bind_param("i", $pid);
@@ -350,7 +350,7 @@ function getProductInfo($intProductId, $boolGetChildren) {
 function getProductStyleInfo() {
     global $mysqli;
 
-    $query = "select * from single_track.product_style ";
+    $query = "select * from singletrack.product_style ";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
@@ -363,7 +363,7 @@ function getProductStyleInfo() {
 function getMiscText($miscTextName) {
     global $mysqli;
 
-    $query = "select * from single_track.misc_text mt " .
+    $query = "select * from singletrack.misc_text mt " .
         "where LOWER(mt.misc_text_name) = LOWER(?) ";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -382,7 +382,7 @@ function getMiscText($miscTextName) {
 function getAllMiscText() {
     global $mysqli;
 
-    $query = "select * from single_track.misc_text";
+    $query = "select * from singletrack.misc_text";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
@@ -395,7 +395,7 @@ function getAllMiscText() {
 function getPageContent($pageContentId) {
     global $mysqli;
 
-    $query = "select * from single_track.page_content pc ".
+    $query = "select * from singletrack.page_content pc ".
         "where pc.page_content_id = ? ";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -416,7 +416,7 @@ function getPageContent($pageContentId) {
 function getAllPageContent() {
     global $mysqli;
 
-    $query = "select * from single_track.page_content";
+    $query = "select * from singletrack.page_content";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
         handleError($mysqli->error);
@@ -437,7 +437,7 @@ function insertBulletin($title, $text) {
         return false;
     }
 
-    $query = "insert into single_track.announcements " .
+    $query = "insert into singletrack.announcements " .
         "(title, `text`, `date`) " .
         "values (?, ?, NOW())";
     $stmt = $mysqli->prepare($query);
@@ -454,7 +454,7 @@ function insertBulletin($title, $text) {
 function updateBulletin($annId, $title, $text, $resetDate) {
     global $mysqli;
 
-    $query = "update single_track.announcements " .
+    $query = "update singletrack.announcements " .
         "set title = ?, " .
         "text = ? ";
     if ($resetDate) {
@@ -475,7 +475,7 @@ function updateBulletin($annId, $title, $text, $resetDate) {
 function deleteBulletin($annId) {
     global $mysqli;
 
-    $query = "delete from single_track.announcements " .
+    $query = "delete from singletrack.announcements " .
         "where announcement_id = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -491,7 +491,7 @@ function deleteBulletin($annId) {
 function addContentItem($locationId, $title, $content, $bgUrl, $bgAlt) {
     global $mysqli;
 
-    $query = "insert into single_track.content_item " .
+    $query = "insert into singletrack.content_item " .
         "(content_item_location_id, title, content, bg_image_url, bg_image_alt) " .
         "values (?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($query);
@@ -508,7 +508,7 @@ function addContentItem($locationId, $title, $content, $bgUrl, $bgAlt) {
 function editContentItem($itemId, $locationId, $title, $content, $bgUrl, $bgAlt) {
     global $mysqli;
 
-    $query = "update single_track.content_item " .
+    $query = "update singletrack.content_item " .
         "set content_item_location_id = ? ," .
         "title = ?, " .
         "content = ?, " .
@@ -530,7 +530,7 @@ function editContentItem($itemId, $locationId, $title, $content, $bgUrl, $bgAlt)
 function deleteContentItem($itemId) {
     global $mysqli;
 
-    $query = "delete from single_track.content_item " .
+    $query = "delete from singletrack.content_item " .
         "where content_item_id = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -562,7 +562,7 @@ function reorderContentItemUp($upItemId) {
         return false;
     }
 
-    $query = "update single_track.content_item " .
+    $query = "update singletrack.content_item " .
         "set order_num = ? " .
         "where content_item_id = ?";
     $stmt = $mysqli->prepare($query);
@@ -603,7 +603,7 @@ function reorderContentItemDown($downItemId) {
         return false;
     }
 
-    $query = "update single_track.content_item " .
+    $query = "update singletrack.content_item " .
         "set order_num = ? " .
         "where content_item_id = ?";
     $stmt = $mysqli->prepare($query);
@@ -629,7 +629,7 @@ function updateProductInfo($pId, $styleId, $name, $descr, $longDescr,
 
     global $mysqli;
 
-    $query = "update single_track.product " .
+    $query = "update singletrack.product " .
         "set product_style_id = ?, " .
         "name = ?, " .
         "descr = ?, " .
@@ -655,7 +655,7 @@ function insertNewProduct($parentId, $selStyle, $name, $descr, $longDescr,
 
     global $mysqli;
 
-    $query = "insert into single_track.product " .
+    $query = "insert into singletrack.product " .
         "(parent_product_id, product_style_id, name, descr, long_descr, ". 
         "offsite_url, offsite_url_text, image_url, background_image_url) ". 
         "values (?, ?, ?, ? ,?, ?, ?, ?, ?) ";
@@ -674,7 +674,7 @@ function deleteProduct($productId) {
     global $mysqli;
 
     //remove references
-    $query = "update single_track.product " .
+    $query = "update singletrack.product " .
         "set parent_product_id = null " .
         "where parent_product_id = ? ";
     $stmt = $mysqli->prepare($query);
@@ -687,7 +687,7 @@ function deleteProduct($productId) {
     $orphanCount = $stmt->affected_rows;
 
     //delete product
-    $query = "delete from single_track.product " .
+    $query = "delete from singletrack.product " .
         "where product_id = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -703,7 +703,7 @@ function deleteProduct($productId) {
 function getOrphanedProducts() {
     global $mysqli;
 
-    $query = "select p.product_id, p.name from single_track.product p " .
+    $query = "select p.product_id, p.name from singletrack.product p " .
         "where p.parent_product_id is null " .
         "and p.product_id <> 1";
     $stmt = $mysqli->prepare($query);
@@ -718,7 +718,7 @@ function getOrphanedProducts() {
 function setParent($productId, $parentId) {
     global $mysqli;
 
-    $query = "update single_track.product ".
+    $query = "update singletrack.product ".
         "set parent_product_id = ? " .
         "where product_id = ?";
     $stmt = $mysqli->prepare($query);
@@ -735,7 +735,7 @@ function setParent($productId, $parentId) {
 function updateMiscText($miscTextName, $value) {
     global $mysqli;
 
-    $query = "update single_track.misc_text " .
+    $query = "update singletrack.misc_text " .
         "set value = ? " .
         "where LOWER(misc_text_name) = LOWER(?)";
 
@@ -753,7 +753,7 @@ function updateMiscText($miscTextName, $value) {
 function insertPageContent($pageTitle, $pageHead, $pageContent) {
     global $mysqli;
 
-    $query = "insert into single_track.page_content " .
+    $query = "insert into singletrack.page_content " .
         "(page_title, page_heading, page_content) " .
         "values(?, ?, ?)";
 
@@ -771,7 +771,7 @@ function insertPageContent($pageTitle, $pageHead, $pageContent) {
 function updatePageContent($pageId, $pageTitle, $pageHead, $pageContent) {
     global $mysqli;
 
-    $query = "update single_track.page_content " .
+    $query = "update singletrack.page_content " .
         "set page_title = ?, " .
         "page_heading = ?, " .
         "page_content = ? " .
@@ -805,7 +805,7 @@ function deletePageContent($pageId) {
         }
     }
 
-    $query = "delete from single_track.page_content " .
+    $query = "delete from singletrack.page_content " .
         "where page_content_id = ?";
 
     $stmt = $mysqli->prepare($query);
@@ -822,14 +822,14 @@ function deletePageContent($pageId) {
 function addNavLink($linkUrl, $linkText, $hoverText = null) {
     global $mysqli;
 
-    $query = "insert into single_track.nav_links " .
+    $query = "insert into singletrack.nav_links " .
         "(link_url, link_text, `order` ";
     if (!empty($hoverText)) {
         $query .= ", link_hover_text ";
     }
     $query .= ") " .
         "values (?, ?, (" .
-        "select MAX(nl.order) from single_track.nav_links nl " .
+        "select MAX(nl.order) from singletrack.nav_links nl " .
         "where nl.parent_nav_link_id is null) ";
     if (!empty($hoverText)) {
         $query .= ", ? ";
@@ -854,14 +854,14 @@ function addNavLink($linkUrl, $linkText, $hoverText = null) {
 function addNavLinkWParent($parentId, $linkUrl, $linkText, $hoverText = null) {
     global $mysqli;
 
-    $query = "insert into single_track.nav_links " .
+    $query = "insert into singletrack.nav_links " .
         "(parent_nav_link_id, link_url, link_text, `order` ";
     if (!empty($hoverText)) {
         $query .= ", link_hover_text ";
     }
     $query .= ") " .
         "values (?, ?, ?, (" .
-        "select MAX(nl.order) from single_track.nav_links nl " .
+        "select MAX(nl.order) from singletrack.nav_links nl " .
         "where nl.parent_nav_link_id is null )";
     if (!empty($hoverText)) {
         $query .= " , ? ";
@@ -886,7 +886,7 @@ function addNavLinkWParent($parentId, $linkUrl, $linkText, $hoverText = null) {
 function addFooterLink($linkUrl, $linkText) {
     global $mysqli;
 
-    $query = "insert into single_track.footer_links " .
+    $query = "insert into singletrack.footer_links " .
         "(link_url, link_text) " .
         "values (?, ?)";
     $stmt = $mysqli->prepare($query);
@@ -903,7 +903,7 @@ function addFooterLink($linkUrl, $linkText) {
 function deleteFromNavBar($pageId) {
     global $mysqli;
 
-    $query = "delete from single_track.nav_links " .
+    $query = "delete from singletrack.nav_links " .
         "where link_url = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -920,7 +920,7 @@ function deleteFromNavBar($pageId) {
 function deleteFromFooterLinks($pageId) {
     global $mysqli;
 
-    $query = "delete from single_track.footer_links " .
+    $query = "delete from singletrack.footer_links " .
         "where link_url = ?";
     $stmt = $mysqli->prepare($query);
     if (!$stmt) {
@@ -958,7 +958,7 @@ function reOrderNavLinkUp($upLinkId, $parentId) {
         return false;
     }
 
-    $query = "update single_track.nav_links " .
+    $query = "update singletrack.nav_links " .
         "set `order` = ? " .
         "where nav_link_id = ?";
     $stmt = $mysqli->prepare($query);
@@ -999,7 +999,7 @@ function reOrderNavLinkDown($downLinkId, $parentId) {
         return false;
     }
 
-    $query = "update single_track.nav_links " .
+    $query = "update singletrack.nav_links " .
         "set `order` = ? " .
         "where nav_link_id = ?";
     $stmt = $mysqli->prepare($query);
@@ -1023,7 +1023,7 @@ function reOrderNavLinkDown($downLinkId, $parentId) {
 function updateNavLink($linkId, $url, $text, $hover) {
     global $mysqli;
 
-    $query = "update single_track.nav_links " .
+    $query = "update singletrack.nav_links " .
         "set link_url = ?, " .
         "link_text = ?, ";
     if (!empty($hover)) {
@@ -1048,7 +1048,7 @@ function updateNavLink($linkId, $url, $text, $hover) {
 function deleteNavLink($linkId) {
     global $mysqli;
 
-    $query = "delete from single_track.nav_links " .
+    $query = "delete from singletrack.nav_links " .
         "where nav_link_id = ? " .
         "or parent_nav_link_id = ?";
     $stmt = $mysqli->prepare($query);
