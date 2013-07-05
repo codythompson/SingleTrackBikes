@@ -30,10 +30,8 @@ if (isset($_POST["form_type"]) && $_POST["form_type"] === "pwordreset") {
             "where user_name = ?";
         $stmt = $mysqli->prepare($query);
         if (!$stmt) {
-            var_dump($mysqli->error);
         }
         $stmt->bind_param("sss", $salt, $hash, $user);
-        var_dump($hash, $pword1);
         $stmt->execute();
         if ($stmt->affected_rows == 1) {
             $succMess = "Successfully updated password.";
