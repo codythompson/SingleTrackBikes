@@ -23,7 +23,7 @@ function createUser($uname, $pword, $email, $secQ, $secQA) {
     $salt = generateSalt();
     $hash = crypt($pword, "$2a$10$" . $salt);
 
-    $query = "insert into single_track.user ";
+    $query = "insert into singletrack.user ";
     $query .= "(user_name, user_email, user_sec_q, user_sec_q_a, user_salt, user_hash) ";
     $query .= "values (?, ?, ?, ?, ?, ?)";
 
@@ -41,7 +41,7 @@ function createUser($uname, $pword, $email, $secQ, $secQA) {
 function logIn($uname, $pword) {
     global $mysqli;
 
-    $query = "select u.user_salt, u.user_hash from single_track.user u ";
+    $query = "select u.user_salt, u.user_hash from singletrack.user u ";
     $query .= "where u.user_name = ?";
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param("s", $uname);

@@ -24,16 +24,14 @@ if (isset($_POST["form_type"]) && $_POST["form_type"] === "pwordreset") {
         $hash = crypt($pword1, "$2a$10$" . $salt);
         $user = $_SESSION["_user_name_"];
 
-        $query = "update single_track.user " .
+        $query = "update singletrack.user " .
             "set user_salt = ?, " .
             "user_hash = ? ".
             "where user_name = ?";
         $stmt = $mysqli->prepare($query);
         if (!$stmt) {
-            var_dump($mysqli->error);
         }
         $stmt->bind_param("sss", $salt, $hash, $user);
-        var_dump($hash, $pword1);
         $stmt->execute();
         if ($stmt->affected_rows == 1) {
             $succMess = "Successfully updated password.";
