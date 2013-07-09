@@ -69,6 +69,19 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
             }
         </style>
         <![endif]-->
+        <!--[if lte IE 7]>
+        <style type="text/css">
+            .carousel .item {
+                width: 100%;
+            }
+            .carousel-control-left, .carousel-control-right {
+                width: 3%;
+            }
+            .product-navs .pull-left, .product-navs .pull-right {
+                float: none;
+            }
+        </style>
+        <![endif]-->
 <?php
     foreach($cssHrefs as $href) {
         echo "<link rel=\"stylesheet\" href=\"$href\" type=\"text/css\" />";
