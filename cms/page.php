@@ -69,7 +69,9 @@ function MakePage($title, $cssHrefs, $jsSrcs, $navBar, $content,
             }
         </style>
         <![endif]-->
+
         <!--[if lte IE 7]>
+        <!-- IE 7 carousel Fix -->
         <style type="text/css">
             .carousel .item {
                 width: 100%;
